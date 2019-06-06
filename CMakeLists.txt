@@ -1,52 +1,52 @@
-# USE THE CATKIN CMAKELISTS FOR BUILDING WITH CATKIN
-# ELSE PROCEED WITH ROSBUILD BELOW
-if(NOT USE_ROSBUILD)
-  include(catkin.cmake)
-  return()
+cmake_minimum_required(VERSION 3.5)
+project(expressiongraph)
+
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
 endif()
 
-cmake_minimum_required(VERSION 2.4.6)
-include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
 
-# Set the build type.  Options are:
-#  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
-#  Debug          : w/ debug symbols, w/o optimization
-#  Release        : w/o debug symbols, w/ optimization
-#  RelWithDebInfo : w/ debug symbols, w/ optimization
-#  MinSizeRel     : w/o debug symbols, w/ optimization, stripped binaries
-#set(ROS_BUILD_TYPE RelWithDebInfo)
-set(ROS_BUILD_TYPE Release)
-#set(ROS_BUILD_TYPE Debug)
-rosbuild_init()
+find_package(ament_cmake REQUIRED)
 
-#set the default path for built executables to the "bin" directory
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-#set the default path for built libraries to the "lib" directory
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+find_package(Eigen3 REQUIRED)
+find_package(orocos_kdl REQUIRED)
 
-#uncomment if you have defined messages
-#rosbuild_genmsg()
-#uncomment if you have defined services
-#rosbuild_gensrv()
-#SET(ENABLE_EXAMPLES ON CACHE BOOL "enable compilation of a series of examples") 
-OPTION(ENABLE_EXAMPLES "enable compilation of a series of examples" ON) 
-INCLUDE(${PROJECT_SOURCE_DIR}/examples/CMakeLists.txt)
+add_library(${PROJECT_NAME} SHARED 
+    src/expressiontree_expressions.cpp  
+    src/expressiontree_motionprofiles.cpp    
+    src/expressiontree_rotation.cpp  
+    src/expressiontree_wrench.cpp
+    src/expressiontree_chain.cpp   
+    src/expressiontree_frame.cpp        
+    src/expressiontree_twist.cpp     
+    src/mptrap.cpp
+    src/expressiontree_double.cpp  
+    src/expressiontree_mimo.cpp         
+    src/expressiontree_vector.cpp)
 
-FILE( GLOB EXPRESSIONTREE_SRCS src/[^.]*.cpp src/[^.]*.cxx)
+target_include_directories(${PROJECT_NAME} PRIVATE include)
+ament_target_dependencies(${PROJECT_NAME} orocos_kdl)
 
+install(
+  DIRECTORY include/
+  DESTINATION include
+)
 
+install(
+  TARGETS
+  ${PROJECT_NAME}
+  RUNTIME DESTINATION bin
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib)
 
+ament_export_include_directories(
+  include)
 
-#common commands for building c++ executables and libraries
-rosbuild_add_library(${PROJECT_NAME} ${EXPRESSIONTREE_SRCS})
-#target_link_libraries(${PROJECT_NAME} another_library)
-#rosbuild_add_boost_directories()
-#rosbuild_link_boost(${PROJECT_NAME} thread)
-#rosbuild_add_executable(example examples/example.cpp)
-#target_link_libraries(example ${PROJECT_NAME})
+ament_export_libraries(
+  ${PROJECT_NAME})
 
-rosbuild_add_gtest( expressiongraph_test ./tests/expressiongraph_test.cpp )
-target_link_libraries(expressiongraph_test ${PROJECT_NAME} orocos-kdl)
-
-
- 
+ament_package()

@@ -1,19 +1,25 @@
 <?xml version="1.0"?>
-<package>
+<?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="2">
   <name>expressiongraph</name>
   <description>
     This package provides an expression tree framework for the Kinematics 
     and Dynamics Library (KDL). 
   </description>
-  <version>0.1.0</version> <!-- TODO: is this correct? -->
-  <maintainer email="erwin.aertbelien@kuleuven.be">Erwin Aertbelien</maintainer>
+  <version>0.1.0</version>
+  <!-- <maintainer email="erwin.aertbelien@kuleuven.be">Erwin Aertbelien</maintainer> -->
+  <maintainer email="lars.tingelstad@ntnu.no">Lars Tingelstad</maintainer>
   <author email="erwin.aertbelien@kuleuven.be">Erwin Aertbelien</author>
   <license>EUPL v1.1</license>
 
-  <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>orocos_kdl</build_depend>
-  <run_depend>orocos_kdl</run_depend>
-  <test_depend>gtest</test_depend>
-   <build_depend>cmake_modules</build_depend>
-   <run_depend>cmake_modules</run_depend>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>eigen</depend>
+  <depend>orocos_kdl</depend>
+
+  <!-- <test_depend>gtest</test_depend> -->
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
 </package>
