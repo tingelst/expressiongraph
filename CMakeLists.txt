@@ -12,8 +12,9 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 
-find_package(Eigen3 REQUIRED)
 find_package(orocos_kdl REQUIRED)
+
+set(DEPENDENCIES orocos_kdl)
 
 add_library(${PROJECT_NAME} SHARED
             src/expressiontree_expressions.cpp
@@ -41,5 +42,7 @@ install(TARGETS ${PROJECT_NAME}
 ament_export_include_directories(include)
 
 ament_export_libraries(${PROJECT_NAME})
+
+ament_export_dependencies(${DEPENDENCIES})
 
 ament_package()

@@ -14,7 +14,6 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <depend>eigen</depend>
   <depend>orocos_kdl</depend>
 
   <!-- <test_depend>gtest</test_depend> -->
