@@ -203,7 +203,7 @@ void MotionProfileTrapezoidal::compute() {
 
 MIMO::Ptr MotionProfileTrapezoidal::clone() {
     MotionProfileTrapezoidal::Ptr tmp =
-        boost::make_shared< MotionProfileTrapezoidal > ();
+        std::make_shared< MotionProfileTrapezoidal > ();
     tmp->setProgressExpression( 
             getProgressExpression()->clone() 
     );
@@ -255,7 +255,7 @@ Expression<double>::Ptr MotionProfileTrapezoidal::getMaxAcceleration(int idx) {
 MotionProfileTrapezoidalOutput::MotionProfileTrapezoidalOutput(MIMO::Ptr m, int _outputnr):
     MIMO_Output<double>(_outputnr==-1?"Duration":"Output", m), outputnr(_outputnr) {
         MotionProfileTrapezoidal::Ptr p = 
-            boost::static_pointer_cast<MotionProfileTrapezoidal>(m);
+            std::static_pointer_cast<MotionProfileTrapezoidal>(m);
         if ( (outputnr<-1) || (outputnr>= p->nrOfOutputs() ) ) {
             throw std::out_of_range("MotionProfileTrapezoidal::non existing output requested");
         }
@@ -264,7 +264,7 @@ MotionProfileTrapezoidalOutput::MotionProfileTrapezoidalOutput(MIMO::Ptr m, int 
 
 double MotionProfileTrapezoidalOutput::value() {
     MotionProfileTrapezoidal::Ptr p = 
-        boost::static_pointer_cast<MotionProfileTrapezoidal>(mimo);
+        std::static_pointer_cast<MotionProfileTrapezoidal>(mimo);
     p->compute();
     if (outputnr!=-1) {
         // output profile: 
@@ -276,7 +276,7 @@ double MotionProfileTrapezoidalOutput::value() {
 }
 double MotionProfileTrapezoidalOutput::derivative(int i) {
     MotionProfileTrapezoidal::Ptr p = 
-        boost::static_pointer_cast<MotionProfileTrapezoidal>(mimo);
+        std::static_pointer_cast<MotionProfileTrapezoidal>(mimo);
     p->compute();
     if (outputnr!=-1) {
     // value is already called on all inputDouble's in compute

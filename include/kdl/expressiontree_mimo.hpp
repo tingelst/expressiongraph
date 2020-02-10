@@ -30,11 +30,11 @@ namespace KDL {
  * \caveat the overriding class is responsible for filling inputDouble/inputFrame/inputTwist with the correct input expression graphs.
  */
 class MIMO: public CachedExpression {
-    std::vector<boost::weak_ptr<MIMO> >  queue_of_clones;
+    std::vector<std::weak_ptr<MIMO> >  queue_of_clones;
     bool                                          dot_already_written;
 public:
 
-    typedef boost::shared_ptr<MIMO> Ptr;
+    typedef std::shared_ptr<MIMO> Ptr;
 
     const std::string                             name;
     std::vector< Expression<double>::Ptr >        inputDouble;

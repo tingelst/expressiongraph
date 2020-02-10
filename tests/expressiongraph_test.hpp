@@ -60,7 +60,7 @@ template<> Expression<Wrench>::Ptr random<Wrench>(std::vector<int>& ndx) {
  */
 template<class T>
 ::testing::AssertionResult         
-EqualValues(const char* astr, const char* bstr, boost::shared_ptr< Expression<T> > a, boost::shared_ptr< Expression<T> > b) {
+EqualValues(const char* astr, const char* bstr, std::shared_ptr< Expression<T> > a, std::shared_ptr< Expression<T> > b) {
     double eps = 1E-4;
     int n1 = a->number_of_derivatives();
     int n2 = b->number_of_derivatives();
@@ -120,8 +120,8 @@ template <class T>
 ::testing::AssertionResult EqualValues(        
                                                const char* mstr,
                                                const char* nstr,
-                                               boost::shared_ptr< Expression<T> > m,
-                                               boost::shared_ptr< Expression<T> > n) {
+                                               std::shared_ptr< Expression<T> > m,
+                                               std::shared_ptr< Expression<T> > n) {
   if (EqualValue<T>(m,n,1E-4))
     return ::testing::AssertionSuccess();
 
@@ -206,7 +206,7 @@ void setArbitraryInput(typename Expression<T>::Ptr e) {
 template <class T>
 ::testing::AssertionResult CheckNumerical(        
                                                const char* mstr,
-                                               boost::shared_ptr< Expression<T> > m
+                                               std::shared_ptr< Expression<T> > m
                                                ) {
   double h   = 1E-9;
   double tol = 1E-4;
@@ -246,7 +246,7 @@ template <class T>
 template <class T>
 ::testing::AssertionResult CheckNumericalRot(        
                                                const char* mstr,
-                                               boost::shared_ptr< Expression<T> > e
+                                               std::shared_ptr< Expression<T> > e
                                                ) {
     typedef typename AutoDiffTrait<T>::DerivType Td;
     double h = 1E-8;

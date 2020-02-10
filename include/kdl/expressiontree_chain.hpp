@@ -131,11 +131,11 @@ inline Expression<Frame>::Ptr kinematic_chain(const Chain& chain, int index_of_f
 }
 
 class Expression_Chain_Derivative : public FunctionType<Twist> {
-    boost::shared_ptr<Expression_Chain> argument;
+    std::shared_ptr<Expression_Chain> argument;
     int                                 var_ndx;
 
   protected:
-    Expression_Chain_Derivative(boost::shared_ptr<Expression_Chain> arg, int i);
+    Expression_Chain_Derivative(std::shared_ptr<Expression_Chain> arg, int i);
 
   public:
     virtual void setInputValues(const std::vector<double>& values);

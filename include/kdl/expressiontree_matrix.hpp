@@ -79,7 +79,7 @@ public:
     }
 
     virtual typename BinExpr::Ptr clone() {
-            return boost::make_shared< Matrix_Multiplication<n,m,k> >( 
+            return std::make_shared< Matrix_Multiplication<n,m,k> >( 
                 this->argument1->clone(), 
                 this->argument2->clone() 
             );
@@ -95,7 +95,7 @@ template< int n, int m, int k>
 inline typename Expression<Eigen::Matrix<double, n,k> >::Ptr 
 multiply ( typename Expression< Eigen::Matrix<double,n,m> >::Ptr a1, 
             typename Expression< Eigen::Matrix<double,m,k> >::Ptr a2 ) {
-	return boost::make_shared< Matrix_Multiplication<n,m,k>  >(a1,a2);
+	return std::make_shared< Matrix_Multiplication<n,m,k>  >(a1,a2);
 }
 
 template< int n, int m>
@@ -129,7 +129,7 @@ public:
     }
 
     virtual typename BinExpr::Ptr clone() {
-            return boost::make_shared< Matrix_Addition<n,m> >( 
+            return std::make_shared< Matrix_Addition<n,m> >( 
                 this->argument1->clone(), 
                 this->argument2->clone() 
             );
@@ -145,7 +145,7 @@ template< int n, int m>
 inline typename Expression<Eigen::Matrix<double, n,m> >::Ptr 
 addition( typename Expression< Eigen::Matrix<double,n,m> >::Ptr a1, 
             typename Expression< Eigen::Matrix<double,n,m> >::Ptr a2 ) {
-	return boost::make_shared< Matrix_Addition<n,m>  >(a1,a2);
+	return std::make_shared< Matrix_Addition<n,m>  >(a1,a2);
 }
 
 
@@ -180,14 +180,14 @@ public:
     }
 
     virtual  typename UnExpr::Ptr clone() {
-        return boost::make_shared< MatrixElement >(this->argument->clone(), i, j);
+        return std::make_shared< MatrixElement >(this->argument->clone(), i, j);
     }
 };
 
 template<int n, int m>
 inline Expression<double>::Ptr get_element( int i,int j, typename Expression<Eigen::Matrix<double,n,m> >::Ptr a) {
     if ((0<=i)&&(i<n)&&(0<=j)&&(j<m)) {
-        return boost::make_shared<MatrixElement<n,m> >(a,i,j);
+        return std::make_shared<MatrixElement<n,m> >(a,i,j);
     } else {
         return Expression<double>::Ptr();
     }

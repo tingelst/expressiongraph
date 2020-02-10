@@ -26,7 +26,7 @@
 #include <kdl/framevel.hpp>
 #include <kdl/stiffness.hpp>
 #include <kdl/frames_io.hpp>
-#include <boost/smart_ptr.hpp>
+#include <memory>
 #include <kdl/utilities/utility.h>
 #include <vector>
 #include <Eigen/Dense>
@@ -88,7 +88,7 @@ class Expression;
  */
 class ExpressionBase {
   public:
-    typedef boost::shared_ptr<ExpressionBase> Ptr;
+    typedef std::shared_ptr<ExpressionBase> Ptr;
 
     /**
      * Fills in the input values for this expression.
@@ -224,12 +224,12 @@ class ExpressionBase {
      *
      * example usage:  a = subExpression_Frame("blablabla"); if (a) { action_when_subexpr_exists }
      */
-    virtual boost::shared_ptr<Expression<Frame> >    subExpression_Frame(const std::string& name) = 0;
-    virtual boost::shared_ptr<Expression<Rotation> > subExpression_Rotation(const std::string& name) = 0;
-    virtual boost::shared_ptr<Expression<Vector> >   subExpression_Vector(const std::string& name) = 0;
-    virtual boost::shared_ptr<Expression<Twist> >    subExpression_Twist(const std::string& name) = 0;
-    virtual boost::shared_ptr<Expression<Wrench> >   subExpression_Wrench(const std::string& name) = 0;
-    virtual boost::shared_ptr<Expression<double> >   subExpression_Double(const std::string& name) = 0;
+    virtual std::shared_ptr<Expression<Frame> >    subExpression_Frame(const std::string& name) = 0;
+    virtual std::shared_ptr<Expression<Rotation> > subExpression_Rotation(const std::string& name) = 0;
+    virtual std::shared_ptr<Expression<Vector> >   subExpression_Vector(const std::string& name) = 0;
+    virtual std::shared_ptr<Expression<Twist> >    subExpression_Twist(const std::string& name) = 0;
+    virtual std::shared_ptr<Expression<Wrench> >   subExpression_Wrench(const std::string& name) = 0;
+    virtual std::shared_ptr<Expression<double> >   subExpression_Double(const std::string& name) = 0;
 
     virtual void debug_printtree() = 0;
 
@@ -299,7 +299,7 @@ class Expression : public ExpressionBase {
   public:
     std::string name;
 
-    typedef typename boost::shared_ptr<Expression<ResultType> > Ptr;
+    typedef typename std::shared_ptr<Expression<ResultType> > Ptr;
     typedef typename AutoDiffTrait<ResultType>::DerivType       DerivType;
 
     Expression() {
@@ -334,7 +334,7 @@ class Expression : public ExpressionBase {
     /**
      * makes a deep copy of the expression.
      */
-    virtual boost::shared_ptr<Expression<ResultType> > clone() = 0;
+    virtual std::shared_ptr<Expression<ResultType> > clone() = 0;
 
     virtual void debug_printtree() {
         std::cout << name;

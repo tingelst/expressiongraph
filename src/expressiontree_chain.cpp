@@ -187,7 +187,7 @@ Expression<Frame>::Ptr Expression_Chain::clone() {
 
 Expression<Twist>::Ptr Expression_Chain::derivativeExpression(int i) 
 {
-    boost::shared_ptr<Expression_Chain> chain( this );
+    std::shared_ptr<Expression_Chain> chain( this );
     Expression<Twist>::Ptr expr( new Expression_Chain_Derivative(chain,i));
     return expr;
 }
@@ -199,7 +199,7 @@ void Expression_Chain::write_dotfile_helper(std::ostream& of, size_t& thisnode,s
 */
 
 
-Expression_Chain_Derivative::Expression_Chain_Derivative(boost::shared_ptr<Expression_Chain> arg, int i):
+Expression_Chain_Derivative::Expression_Chain_Derivative(std::shared_ptr<Expression_Chain> arg, int i):
     FunctionType<Twist>("chain_derivative"),
     argument(arg),
     var_ndx(i) {

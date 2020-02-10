@@ -12,7 +12,7 @@ class MMult : public MIMO {
         double y[2];
         double dydx[2][2];
 
-        typedef boost::shared_ptr<MMult> Ptr;
+        typedef std::shared_ptr<MMult> Ptr;
 
         MMult(double _a, double _b, double _c, double _d, Expression<double>::Ptr x1, Expression<double>::Ptr x2):
             MIMO("MMult"),
@@ -46,19 +46,19 @@ MMult::Ptr create_MMult(double a, double b, double c, double d, Expression<doubl
 
 class MMultOut : public MIMO_Output<double> {
     public:
-        typedef boost::shared_ptr<MMultOut> Ptr;
+        typedef std::shared_ptr<MMultOut> Ptr;
         int outputnr;
 
         MMultOut(MIMO::Ptr m, int _outputnr):MIMO_Output<double>("MMult_Out",m), outputnr(_outputnr) {}
         
         double value() {
-            MMult::Ptr p = boost::static_pointer_cast<MMult>(mimo);
+            MMult::Ptr p = std::static_pointer_cast<MMult>(mimo);
             p->compute();
             return p->y[outputnr]; 
         }
 
         double derivative(int i){
-            MMult::Ptr p = boost::static_pointer_cast<MMult>(mimo);
+            MMult::Ptr p = std::static_pointer_cast<MMult>(mimo);
             p->compute();
             if ((0<=i)&&(i<=1)) {
                 return p->dydx[outputnr][i];

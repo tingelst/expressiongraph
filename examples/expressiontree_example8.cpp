@@ -27,7 +27,7 @@
 #include <iostream>
 #include <iomanip>
 
-KDL::Twist numerical_derivative_jacobian( boost::shared_ptr<KDL::Expression_Chain>& expr, std::vector<double> values, int first,int second, double dt=1E-7) {
+KDL::Twist numerical_derivative_jacobian( std::shared_ptr<KDL::Expression_Chain>& expr, std::vector<double> values, int first,int second, double dt=1E-7) {
     KDL::Twist a,b;
     double val = values[second];
 
@@ -45,7 +45,7 @@ KDL::Twist numerical_derivative_jacobian( boost::shared_ptr<KDL::Expression_Chai
     return diff(a,b,2*dt);
 }
 
-KDL::Twist numerical_timederivative_jacobian( boost::shared_ptr<KDL::Expression_Chain>& expr, std::vector<double> values, std::vector<double> values_dot,int column, double dt=1E-7) {
+KDL::Twist numerical_timederivative_jacobian( std::shared_ptr<KDL::Expression_Chain>& expr, std::vector<double> values, std::vector<double> values_dot,int column, double dt=1E-7) {
     std::vector<double> val(values.size());
     KDL::Twist a,b;
     for (int i=0;i<val.size();++i) {
@@ -95,7 +95,7 @@ int main(int argc, char* argv[]) {
 
     // you cannot use the kinematic_chain helper function because you need the specific type
     // of Expression_chain instead of the base class Expression<>
-    boost::shared_ptr<Expression_Chain> kinchain( new Expression_Chain(chain, 0 ));   
+    std::shared_ptr<Expression_Chain> kinchain( new Expression_Chain(chain, 0 ));   
     std::vector<double> joints(kinchain->number_of_derivatives()); 
     // specify input values:  
     int N=10;

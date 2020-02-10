@@ -58,7 +58,7 @@ class VariableType : public FunctionType<ResultType> {
     typedef ResultType                                    ValueType;
     typedef typename std::vector<DerivType>               JacobianType;
 
-    typedef typename boost::shared_ptr<VariableType> Ptr;
+    typedef typename std::shared_ptr<VariableType> Ptr;
 
     /// pointer to the original VariableType object (when cloned)
     VariableType<ResultType>* original;
@@ -202,7 +202,7 @@ template <typename ValueType>
 class Callback {
   public:
     typedef typename AutoDiffTrait<ValueType>::DerivType DerivType;
-    typedef typename boost::shared_ptr<Callback>         Ptr;
+    typedef typename std::shared_ptr<Callback>         Ptr;
     virtual void          compute(ValueType& value, std::vector<DerivType>& jacobian) = 0;
     virtual Callback::Ptr clone() = 0;
     virtual ~Callback() {
@@ -235,7 +235,7 @@ public:
     typedef typename std::vector<DerivType>                     JacobianType;
 
 public:
-    typedef typename boost::shared_ptr<CallbackNode> Ptr;
+    typedef typename std::shared_ptr<CallbackNode> Ptr;
 
     /// smart pointer to the current value:
     ValueType val;

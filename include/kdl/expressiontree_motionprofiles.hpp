@@ -36,7 +36,7 @@ class MotionProfileTrapezoidal : public MIMO {
     int                 critical_output;  // index of the output that determines the duration
     std::vector<MPTrap> mp;
     double              progrvar_value;
-    typedef boost::shared_ptr<MotionProfileTrapezoidal> Ptr;
+    typedef std::shared_ptr<MotionProfileTrapezoidal> Ptr;
     MotionProfileTrapezoidal();
 
     /**
@@ -101,7 +101,7 @@ class MotionProfileTrapezoidal : public MIMO {
 
 class MotionProfileTrapezoidalOutput : public MIMO_Output<double> {
   public:
-    typedef boost::shared_ptr<MotionProfileTrapezoidalOutput> Ptr;
+    typedef std::shared_ptr<MotionProfileTrapezoidalOutput> Ptr;
     int                                                       outputnr;
     int                                                       idx_base;
 
@@ -123,7 +123,7 @@ class MotionProfileTrapezoidalOutput : public MIMO_Output<double> {
  * defined.
  */
 MotionProfileTrapezoidal::Ptr create_motionprofile_trapezoidal() {
-    return boost::make_shared<MotionProfileTrapezoidal>();
+    return std::make_shared<MotionProfileTrapezoidal>();
 }
 
 /**
@@ -131,14 +131,14 @@ MotionProfileTrapezoidal::Ptr create_motionprofile_trapezoidal() {
  * \param idx index of the output for which the expression is returned.
  */
 Expression<double>::Ptr get_output_profile(MotionProfileTrapezoidal::Ptr& m, int output) {
-    return boost::make_shared<MotionProfileTrapezoidalOutput>(m, output);
+    return std::make_shared<MotionProfileTrapezoidalOutput>(m, output);
 }
 
 /**
  * \brief gets an expression representing the duration
  */
 Expression<double>::Ptr get_duration(MotionProfileTrapezoidal::Ptr& m) {
-    return boost::make_shared<MotionProfileTrapezoidalOutput>(m, -1);
+    return std::make_shared<MotionProfileTrapezoidalOutput>(m, -1);
 }
 
 }  // end of namespace KDL
