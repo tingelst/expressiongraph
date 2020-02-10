@@ -1,23 +1,23 @@
 /**
  * @file expressiontree_expressions.hpp
  * @brief contains basic infrastructure for expression trees.
-*
-* expressiongraph library
-* 
-* Copyright 2014 Erwin Aertbelien - KU Leuven - Dep. of Mechanical Engineering
-*
-* Licensed under the EUPL, Version 1.1 only (the "Licence");
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at:
-*
-* http://ec.europa.eu/idabc/eupl 
-*
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the Licence is distributed on an "AS IS" basis,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the Licence for the specific language governing permissions and 
-* limitations under the Licence.
-*/
+ *
+ * expressiongraph library
+ *
+ * Copyright 2014 Erwin Aertbelien - KU Leuven - Dep. of Mechanical Engineering
+ *
+ * Licensed under the EUPL, Version 1.1 only (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
+ */
 
 #ifndef KDL_EXPRESSIONTREE_EXPRESSIONS_HPP
 #define KDL_EXPRESSIONTREE_EXPRESSIONS_HPP
@@ -41,20 +41,18 @@
 
 // colorscheme:
 #define COLOR_OPERATION "\"#5CCCCC\""
-#define COLOR_CACHED    "\"#FF7400\""
-#define COLOR_LEAF      "\"#FFB273\""
+#define COLOR_CACHED "\"#FF7400\""
+#define COLOR_LEAF "\"#FFB273\""
 
 #include <stdint.h>
-typedef uintptr_t  pnumber;
+typedef uintptr_t pnumber;
 
 namespace KDL {
 
-
 class ExpressionOptimizer;
 
-
 /**
- * start a dotfile 
+ * start a dotfile
  *
  * Use it as follows:
  *  - write_dotfile_start(of)
@@ -66,17 +64,17 @@ class ExpressionOptimizer;
  *
  * You can use e->write_dotfile(of) if you only have to write one expression to the dot-file.
  *
- * \param [in] of stream to output to. 
- * 
+ * \param [in] of stream to output to.
+ *
  */
 inline void write_dotfile_start(std::ostream& of) {
-     of << "digraph expressiontree { \n"
-       << "rankdir=BT\n\n"; // rev
+    of << "digraph expressiontree { \n"
+       << "rankdir=BT\n\n";  // rev
 }
 
 /**
  * end a dotfile
- * \param [in] of stream to output to. 
+ * \param [in] of stream to output to.
  */
 inline void write_dotfile_end(std::ostream& of) {
     of << "}";
@@ -89,73 +87,72 @@ class Expression;
  * Definition of all methods of Expression<T> whose interface does not depend on T.
  */
 class ExpressionBase {
-public:
-   typedef boost::shared_ptr< ExpressionBase > Ptr;
-
-
-   /**
-     * Fills in the input values for this expression. 
-     * This method call is passed through to all underlying nodes of the expression tree.
-     * A Node decides for itself whether it can use any of the input values.  The default
-     * action it to do nothing and pass it to the descendants.
-     */
-    virtual void setInputValues(const std::vector<double>& values)=0;
+  public:
+    typedef boost::shared_ptr<ExpressionBase> Ptr;
 
     /**
-     * Fills in the input values for this expression. 
+     * Fills in the input values for this expression.
+     * This method call is passed through to all underlying nodes of the expression tree.
+     * A Node decides for itself whether it can use any of the input values.  The default
+     * action it to do nothing and pass it to the descendants.
+     */
+    virtual void setInputValues(const std::vector<double>& values) = 0;
+
+    /**
+     * Fills in the input values for this expression.
      * This method call is passed through to all underlying nodes of the expression tree.
      * A Node decides for itself whether it can use any of the input values.  The default
      * action it to do nothing and pass it to the descendants.
      *
-     * The effect of calling this method is the same as repeatedly calling 
+     * The effect of calling this method is the same as repeatedly calling
      *    setInputValue(ndx[i], values[i])
      * for all i = 0.. size-1
      *
-     * @param ndx a vector of indices, 
+     * @param ndx a vector of indices,
      * @param values a vector of values, should be the same size as ndx.
      */
-    virtual void setInputValues(const std::vector<int>& ndx,const std::vector<double>& values) {
-        assert(ndx.size()==values.size());
-        for (size_t i=0;i<ndx.size();++i) {
-            setInputValue(ndx[i],values[i]);
-        }
-    }
- 
-   /**
-     * Fills in the input values for this expression. 
-     * This method call is passed through to all underlying nodes of the expression tree.
-     * A Node decides for itself whether it can use any of the input values.  The default
-     * action it to do nothing and pass it to the descendants.
-     *
-     * The effect of calling this method is the same as repeatedly calling 
-     *    setInputValue(ndx[i], values[i])
-     * for all i = 0.. size-1
-     *
-     * @param ndx a vector of indices, 
-     * @param values a vector of values, should be the same size as ndx.
-     */
-    virtual void setInputValues(const std::vector<int>& ndx,const Eigen::VectorXd& values) {
-        assert(ndx.size()==(size_t)values.rows());
-        for (size_t i=0;i<ndx.size();++i) {
-            setInputValue(ndx[i],values[i]);
+    virtual void setInputValues(const std::vector<int>& ndx, const std::vector<double>& values) {
+        assert(ndx.size() == values.size());
+        for (size_t i = 0; i < ndx.size(); ++i) {
+            setInputValue(ndx[i], values[i]);
         }
     }
 
-   /**
+    /**
+     * Fills in the input values for this expression.
+     * This method call is passed through to all underlying nodes of the expression tree.
+     * A Node decides for itself whether it can use any of the input values.  The default
+     * action it to do nothing and pass it to the descendants.
+     *
+     * The effect of calling this method is the same as repeatedly calling
+     *    setInputValue(ndx[i], values[i])
+     * for all i = 0.. size-1
+     *
+     * @param ndx a vector of indices,
+     * @param values a vector of values, should be the same size as ndx.
+     */
+    virtual void setInputValues(const std::vector<int>& ndx, const Eigen::VectorXd& values) {
+        assert(ndx.size() == (size_t)values.rows());
+        for (size_t i = 0; i < ndx.size(); ++i) {
+            setInputValue(ndx[i], values[i]);
+        }
+    }
+
+    /**
      * Identical to the other setInputValues(ndx,values) method, but with
      * an std::vector<Rotation> for the values.
-     * @param ndx a vector of indices, of course, these should be at least 3 indices apart 
+     * @param ndx a vector of indices, of course, these should be at least 3 indices apart
      * @param values a vector of values, should be the same size as ndx.
      */
-    virtual void setInputValues(const std::vector<int>& ndx,const std::vector<Rotation>& values) {
-        assert(ndx.size()==values.size());
-        for (size_t i=0;i<ndx.size();++i) {
-            setInputValue(ndx[i],values[i]);
+    virtual void setInputValues(const std::vector<int>& ndx, const std::vector<Rotation>& values) {
+        assert(ndx.size() == values.size());
+        for (size_t i = 0; i < ndx.size(); ++i) {
+            setInputValue(ndx[i], values[i]);
         }
     }
 
     /**
-     * Fills in the input values for this expression. 
+     * Fills in the input values for this expression.
      * This method call is passed through to all underlying nodes of the expression tree.
      * A Node decides for itself whether it can use any of the input values.  The default
      * action it to do nothing and pass it to the descendants.
@@ -172,19 +169,17 @@ public:
      */
     virtual void setInputValue(int variable_number, const Rotation& val) = 0;
 
-
     /**
-     * Fills in the input values for this expression. 
+     * Fills in the input values for this expression.
      * This method call is passed through to all underlying nodes of the expression tree.
      * A Node decides for itself whether it can use any of the input values.  The default
      * action it to do nothing and pass it to the descendants.
      * This routines allows to set the variable_number-th variable with the geven value "val"
      */
     virtual void setInputValue(double val) {
-        setInputValue(0,val);
-    } 
+        setInputValue(0, val);
+    }
 
-   
     /**
      * add the expression to the given ExpressionOptimizer.  ExpressionOptimizer can this
      * later use to optimize setInputValue() and cache-update strategies.
@@ -196,7 +191,8 @@ public:
      * For rotational input variables, three dependencies are returned.
      * For VariableType nodes, the during construction specified variable numbers are returned.
      * \warning getDependencies is not the union of getScalarDependencies and getRotDependencies, since
-     *          also VariableType nodes influence getDependencies, and these are of neither InputType or InputRotationType
+     *          also VariableType nodes influence getDependencies, and these are of neither InputType or
+     * InputRotationType
      */
     virtual void getDependencies(std::set<int>& varset) = 0;
 
@@ -222,20 +218,20 @@ public:
      * Cached nodes can be given a name.  A reference to these nodes
      * can be obtained using this name.  There are no checks for duplicate names, the behavior
      * is undefined with duplicate names.
-     * Returns a null pointer if no subexpression with the name is found. 
+     * Returns a null pointer if no subexpression with the name is found.
      * Returns also a null pointer if the type of the cached node does not correspond to the
      * type asked.
-     * 
+     *
      * example usage:  a = subExpression_Frame("blablabla"); if (a) { action_when_subexpr_exists }
      */
-    virtual boost::shared_ptr<Expression<Frame> > subExpression_Frame(const std::string& name) = 0; 
-    virtual boost::shared_ptr<Expression<Rotation> > subExpression_Rotation(const std::string& name) = 0; 
-    virtual boost::shared_ptr<Expression<Vector> > subExpression_Vector(const std::string& name) = 0; 
-    virtual boost::shared_ptr<Expression<Twist> > subExpression_Twist(const std::string& name) = 0; 
-    virtual boost::shared_ptr<Expression<Wrench> > subExpression_Wrench(const std::string& name) = 0; 
-    virtual boost::shared_ptr<Expression<double> > subExpression_Double(const std::string& name) = 0; 
- 
-    virtual void debug_printtree()=0;
+    virtual boost::shared_ptr<Expression<Frame> >    subExpression_Frame(const std::string& name) = 0;
+    virtual boost::shared_ptr<Expression<Rotation> > subExpression_Rotation(const std::string& name) = 0;
+    virtual boost::shared_ptr<Expression<Vector> >   subExpression_Vector(const std::string& name) = 0;
+    virtual boost::shared_ptr<Expression<Twist> >    subExpression_Twist(const std::string& name) = 0;
+    virtual boost::shared_ptr<Expression<Wrench> >   subExpression_Wrench(const std::string& name) = 0;
+    virtual boost::shared_ptr<Expression<double> >   subExpression_Double(const std::string& name) = 0;
+
+    virtual void debug_printtree() = 0;
 
     virtual void print(std::ostream& os) const = 0;
 
@@ -252,12 +248,9 @@ public:
      */
     virtual int isScalarVariable() = 0;
 
-
-
-    virtual ~ExpressionBase() {}
+    virtual ~ExpressionBase() {
+    }
 };
-
-
 
 /** The following classes define the structure of the expression tree
  * an expression can have a type (e.g. double, KDL::Vector, etc....)
@@ -272,9 +265,9 @@ public:
  *   When the derivative is not given, it is zero.
  *
  *   IMPORTANT:  value() always has to be called before derivative(int i) on an expression.
- *     (see class definition).  
+ *     (see class definition).
  *     A Typical pattern to call the methods is
- *      - expr->setInputValues(q) 
+ *      - expr->setInputValues(q)
  *      - a = expr->value()
  *      - ad1 = expr->derivative(0)
  *      - ad2 = expr->derivative(1)
@@ -291,7 +284,7 @@ public:
  *   - 0 : Rotation
  *   - 3 : Scalar
  *   - 4 : Scalar
- * In this way, you can request the derivatives for indices 0 up to 4.  
+ * In this way, you can request the derivatives for indices 0 up to 4.
  * Index 0 corresponds to the x component of the angular velicty.
  * Index 1 corresponds to the y component of the angular velicty.
  * Index 2 corresponds to the z component of the angular velicty.
@@ -301,22 +294,22 @@ public:
  * called on an InputRotation object, it is ignored. (and vice-versa).
  */
 
-template< typename ResultType >
-class Expression: public ExpressionBase {
-public:
+template <typename ResultType>
+class Expression : public ExpressionBase {
+  public:
     std::string name;
 
-    typedef typename boost::shared_ptr< Expression<ResultType> > Ptr;
-    typedef typename AutoDiffTrait<ResultType>::DerivType DerivType;
+    typedef typename boost::shared_ptr<Expression<ResultType> > Ptr;
+    typedef typename AutoDiffTrait<ResultType>::DerivType       DerivType;
 
-    Expression() {}
+    Expression() {
+    }
 
-    Expression(const std::string& _name) : name(_name) {};
+    Expression(const std::string& _name) : name(_name){};
     /**
      * returns the value of the expression tree.
      */
-    virtual ResultType value()      = 0;
-
+    virtual ResultType value() = 0;
 
     /**
      * returns the derivative of the expression tree towards variable
@@ -326,13 +319,11 @@ public:
      */
     virtual DerivType derivative(int i) = 0;
 
-
     /**
      * returns towards how many variables the derivative is computed.
      * This function is only introduced for efficiency reasons
      */
     virtual int number_of_derivatives() = 0;
-
 
     virtual typename Expression<DerivType>::Ptr derivativeExpression(int i) = 0;
     /*{
@@ -340,7 +331,6 @@ public:
         // when everything is implemented change this in an abstract method.
     }*/
 
-   
     /**
      * makes a deep copy of the expression.
      */
@@ -351,27 +341,28 @@ public:
     }
     virtual void print(std::ostream& os) const {
         os << name;
-    } 
+    }
 
     /**
-     * \param [in] of stream to output to. 
+     * \param [in] of stream to output to.
      */
     virtual void write_dotfile(std::ostream& of) {
         of << "digraph expressiontree { \n"
-           << "rankdir=BT\n\n"; // rev
+           << "rankdir=BT\n\n";  // rev
         pnumber argnode;
         write_dotfile_init();
-        write_dotfile_update(of,argnode);  
+        write_dotfile_update(of, argnode);
         of << "}";
     }
 
-    /** 
+    /**
      * write this node to the .dot file (has to be initialized)
      * \param [in] thisnode: returns the value of this node,
      */
     virtual void write_dotfile_update(std::ostream& of, pnumber& thisnode) {
-        thisnode=(size_t)this;
-        of << "S"<<thisnode<<"[label=\"" << name << "\",shape=box,style=filled,fillcolor=" << COLOR_OPERATION << ",color=black]\n";
+        thisnode = (size_t)this;
+        of << "S" << thisnode << "[label=\"" << name << "\",shape=box,style=filled,fillcolor=" << COLOR_OPERATION
+           << ",color=black]\n";
     }
 
     /**
@@ -379,9 +370,9 @@ public:
      */
     virtual void write_dotfile_update(std::ostream& of) {
         pnumber argnode;
-        write_dotfile_update(of,argnode);
+        write_dotfile_update(of, argnode);
     }
- 
+
     /**
      * hook to be used if a node wants to be initialized before write_dotfile is called.
      * (can be overridden by nodes inheriting from this base class).
@@ -397,22 +388,20 @@ public:
     }
 };
 
-template<typename T>
-typename Expression<T>::Ptr checkConstant( typename Expression<T>::Ptr a );
- 
+template <typename T>
+typename Expression<T>::Ptr checkConstant(typename Expression<T>::Ptr a);
 
-template< typename ResultType, typename T>
-class UnaryExpression: public Expression<ResultType> {
-public:
-    typedef T ArgumentType;
+template <typename ResultType, typename T>
+class UnaryExpression : public Expression<ResultType> {
+  public:
+    typedef T                        ArgumentType;
     typedef Expression<ArgumentType> ArgumentExpr;
-    typename ArgumentExpr::Ptr argument;
+    typename ArgumentExpr::Ptr       argument;
 
-    UnaryExpression() {}
+    UnaryExpression() {
+    }
 
-    UnaryExpression( const std::string& name,const typename ArgumentExpr::Ptr& ptr):
-            Expression<ResultType>(name)
-    {
+    UnaryExpression(const std::string& name, const typename ArgumentExpr::Ptr& ptr) : Expression<ResultType>(name) {
         argument = checkConstant<T>(ptr);
     }
 
@@ -420,16 +409,16 @@ public:
         argument->setInputValues(values);
     }
     virtual void setInputValue(int variable_number, double val) {
-        argument->setInputValue(variable_number,val);
+        argument->setInputValue(variable_number, val);
     }
 
     virtual void setInputValue(int variable_number, const Rotation& val) {
-        argument->setInputValue(variable_number,val);
+        argument->setInputValue(variable_number, val);
     }
 
     virtual int number_of_derivatives() {
         return argument->number_of_derivatives();
-    } 
+    }
 
     virtual Expression<Frame>::Ptr subExpression_Frame(const std::string& name) {
         return argument->subExpression_Frame(name);
@@ -466,7 +455,7 @@ public:
     virtual void update_variabletype_from_original() {
         argument->update_variabletype_from_original();
     }
- 
+
     virtual void debug_printtree() {
         std::cout << Expression<ResultType>::name << "(";
         argument->debug_printtree();
@@ -479,36 +468,35 @@ public:
         os << ")";
     }
     virtual void write_dotfile_update(std::ostream& of, pnumber& thisnode) {
-        thisnode=(size_t)this;
-        of << "S"<<thisnode<<"[label=\"" << Expression<ResultType>::name << "\",shape=box,style=filled,fillcolor="
-           << COLOR_OPERATION << ",color=black]\n";
+        thisnode = (size_t)this;
+        of << "S" << thisnode << "[label=\"" << Expression<ResultType>::name
+           << "\",shape=box,style=filled,fillcolor=" << COLOR_OPERATION << ",color=black]\n";
         pnumber argnode;
-        argument->write_dotfile_update(of,argnode);
-        of << "S"<<thisnode<<" -> " << "S"<<argnode<< "\n"; // rev.
+        argument->write_dotfile_update(of, argnode);
+        of << "S" << thisnode << " -> "
+           << "S" << argnode << "\n";  // rev.
     }
     virtual void write_dotfile_init() {
         argument->write_dotfile_init();
-    } 
+    }
 };
 
-
-template< typename ResultType, typename T1,typename  T2>
-class BinaryExpression: public Expression<ResultType> {
-public:
-    typedef Expression<T1>                      Argument1Expr;
-    typedef Expression<T2>                      Argument2Expr;
+template <typename ResultType, typename T1, typename T2>
+class BinaryExpression : public Expression<ResultType> {
+  public:
+    typedef Expression<T1> Argument1Expr;
+    typedef Expression<T2> Argument2Expr;
 
     typename Argument1Expr::Ptr argument1;
     typename Argument2Expr::Ptr argument2;
 
-    BinaryExpression() {}
+    BinaryExpression() {
+    }
 
-    BinaryExpression( const std::string& name,
-                      const typename Argument1Expr::Ptr& arg1ptr,
-                      const typename Argument2Expr::Ptr& arg2ptr):
-            Expression<ResultType>(name),
-            argument1(checkConstant<T1>(arg1ptr)),
-            argument2(checkConstant<T2>(arg2ptr)) {
+    BinaryExpression(const std::string&                 name,
+                     const typename Argument1Expr::Ptr& arg1ptr,
+                     const typename Argument2Expr::Ptr& arg2ptr)
+      : Expression<ResultType>(name), argument1(checkConstant<T1>(arg1ptr)), argument2(checkConstant<T2>(arg2ptr)) {
     }
 
     virtual void setInputValues(const std::vector<double>& values) {
@@ -517,20 +505,20 @@ public:
     }
 
     virtual void setInputValue(int variable_number, double val) {
-        argument1->setInputValue(variable_number,val);
-        argument2->setInputValue(variable_number,val);
+        argument1->setInputValue(variable_number, val);
+        argument2->setInputValue(variable_number, val);
     }
 
     virtual void setInputValue(int variable_number, const Rotation& val) {
-        argument1->setInputValue(variable_number,val);
-        argument2->setInputValue(variable_number,val);
+        argument1->setInputValue(variable_number, val);
+        argument2->setInputValue(variable_number, val);
     }
 
     virtual int number_of_derivatives() {
         int n1 = argument1->number_of_derivatives();
         int n2 = argument2->number_of_derivatives();
         return n1 > n2 ? n1 : n2;
-    } 
+    }
 
     virtual Expression<Frame>::Ptr subExpression_Frame(const std::string& name) {
         typename Expression<Frame>::Ptr a;
@@ -556,7 +544,7 @@ public:
         }
         return argument2->subExpression_Vector(name);
     }
-    virtual  Expression<Twist>::Ptr subExpression_Twist(const std::string& name) {
+    virtual Expression<Twist>::Ptr subExpression_Twist(const std::string& name) {
         typename Expression<Twist>::Ptr a;
         a = argument1->subExpression_Twist(name);
         if (a) {
@@ -580,7 +568,6 @@ public:
         }
         return argument2->subExpression_Double(name);
     }
-
 
     virtual void addToOptimizer(ExpressionOptimizer& opt) {
         argument1->addToOptimizer(opt);
@@ -607,7 +594,6 @@ public:
         argument2->update_variabletype_from_original();
     }
 
-
     virtual void debug_printtree() {
         std::cout << Expression<ResultType>::name << "(";
         argument1->debug_printtree();
@@ -625,45 +611,45 @@ public:
     }
 
     virtual void write_dotfile_update(std::ostream& of, pnumber& thisnode) {
-        thisnode=(size_t)this;
-        of << "S"<<thisnode<<"[label=\"" << Expression<ResultType>::name << "\",shape=box,style=filled,fillcolor="
-           << COLOR_OPERATION << ",color=black]\n";
-        pnumber argnode1,argnode2;
-        argument1->write_dotfile_update(of,argnode1);
-        argument2->write_dotfile_update(of,argnode2);
-        of << "S"<<thisnode<<" -> " << "S"<<argnode1<< "\n"; //rev
-        of << "S"<<thisnode<<" -> " << "S"<<argnode2<< "\n"; //rev
+        thisnode = (size_t)this;
+        of << "S" << thisnode << "[label=\"" << Expression<ResultType>::name
+           << "\",shape=box,style=filled,fillcolor=" << COLOR_OPERATION << ",color=black]\n";
+        pnumber argnode1, argnode2;
+        argument1->write_dotfile_update(of, argnode1);
+        argument2->write_dotfile_update(of, argnode2);
+        of << "S" << thisnode << " -> "
+           << "S" << argnode1 << "\n";  // rev
+        of << "S" << thisnode << " -> "
+           << "S" << argnode2 << "\n";  // rev
     }
     virtual void write_dotfile_init() {
         argument1->write_dotfile_init();
         argument2->write_dotfile_init();
-    } 
+    }
 };
 
-template< typename ResultType, typename T1,typename  T2,typename T3>
-class TernaryExpression: public Expression<ResultType> {
-public:
-    typedef Expression<T1>                      Argument1Expr;
-    typedef Expression<T2>                      Argument2Expr;
-    typedef Expression<T3>                      Argument3Expr;
+template <typename ResultType, typename T1, typename T2, typename T3>
+class TernaryExpression : public Expression<ResultType> {
+  public:
+    typedef Expression<T1> Argument1Expr;
+    typedef Expression<T2> Argument2Expr;
+    typedef Expression<T3> Argument3Expr;
 
     typename Argument1Expr::Ptr argument1;
     typename Argument2Expr::Ptr argument2;
     typename Argument3Expr::Ptr argument3;
 
+    TernaryExpression() {
+    }
 
-
-    TernaryExpression() {}
-
-    TernaryExpression( const std::string& name,
+    TernaryExpression(const std::string&                 name,
                       const typename Argument1Expr::Ptr& arg1ptr,
                       const typename Argument2Expr::Ptr& arg2ptr,
-                      const typename Argument3Expr::Ptr& arg3ptr
-                      ):
-        Expression<ResultType>(name),
-        argument1(checkConstant<T1>(arg1ptr)),
-        argument2(checkConstant<T2>(arg2ptr)),
-        argument3(checkConstant<T3>(arg3ptr)) {
+                      const typename Argument3Expr::Ptr& arg3ptr)
+      : Expression<ResultType>(name)
+      , argument1(checkConstant<T1>(arg1ptr))
+      , argument2(checkConstant<T2>(arg2ptr))
+      , argument3(checkConstant<T3>(arg3ptr)) {
     }
 
     virtual void setInputValues(const std::vector<double>& values) {
@@ -673,24 +659,23 @@ public:
     }
 
     virtual void setInputValue(int variable_number, double val) {
-        argument1->setInputValue(variable_number,val);
-        argument2->setInputValue(variable_number,val);
-        argument3->setInputValue(variable_number,val);
+        argument1->setInputValue(variable_number, val);
+        argument2->setInputValue(variable_number, val);
+        argument3->setInputValue(variable_number, val);
     }
 
     virtual void setInputValue(int variable_number, const Rotation& val) {
-        argument1->setInputValue(variable_number,val);
-        argument2->setInputValue(variable_number,val);
-        argument3->setInputValue(variable_number,val);
+        argument1->setInputValue(variable_number, val);
+        argument2->setInputValue(variable_number, val);
+        argument3->setInputValue(variable_number, val);
     }
 
     virtual int number_of_derivatives() {
         int n1 = argument1->number_of_derivatives();
         int n2 = argument2->number_of_derivatives();
         int n3 = argument3->number_of_derivatives();
-        return std::max(n1,std::max(n2,n3));
- 
-    } 
+        return std::max(n1, std::max(n2, n3));
+    }
 
     virtual typename Expression<Frame>::Ptr subExpression_Frame(const std::string& name) {
         typename Expression<Frame>::Ptr a;
@@ -776,7 +761,6 @@ public:
         argument3->addToOptimizer(opt);
     }
 
-
     virtual void getDependencies(std::set<int>& varset) {
         argument1->getDependencies(varset);
         argument2->getDependencies(varset);
@@ -821,34 +805,38 @@ public:
     }
 
     virtual void write_dotfile_update(std::ostream& of, pnumber& thisnode) {
-        thisnode=(size_t)this;
-        of << "S"<<thisnode<<"[label=\"" << Expression<ResultType>::name << "\",shape=box,style=filled,fillcolor="
-           << COLOR_OPERATION << ",color=black]\n";
-        pnumber argnode1,argnode2,argnode3;
-        argument1->write_dotfile_update(of,argnode1);
-        argument2->write_dotfile_update(of,argnode2);
-        argument3->write_dotfile_update(of,argnode3);
-        of << "S"<<thisnode<<" -> " << "S"<<argnode1<< "\n"; //rev
-        of << "S"<<thisnode<<" -> " << "S"<<argnode2<< "\n"; //rev
-        of << "S"<<thisnode<<" -> " << "S"<<argnode3<< "\n"; //rev
+        thisnode = (size_t)this;
+        of << "S" << thisnode << "[label=\"" << Expression<ResultType>::name
+           << "\",shape=box,style=filled,fillcolor=" << COLOR_OPERATION << ",color=black]\n";
+        pnumber argnode1, argnode2, argnode3;
+        argument1->write_dotfile_update(of, argnode1);
+        argument2->write_dotfile_update(of, argnode2);
+        argument3->write_dotfile_update(of, argnode3);
+        of << "S" << thisnode << " -> "
+           << "S" << argnode1 << "\n";  // rev
+        of << "S" << thisnode << " -> "
+           << "S" << argnode2 << "\n";  // rev
+        of << "S" << thisnode << " -> "
+           << "S" << argnode3 << "\n";  // rev
     }
     virtual void write_dotfile_init() {
         argument1->write_dotfile_init();
         argument2->write_dotfile_init();
         argument3->write_dotfile_init();
-    } 
+    }
 };
 
 template <typename _ResultType>
-class FunctionType: public Expression<_ResultType> {
-public:
-    bool dot_already_written;
-    typedef _ResultType ResultType;
+class FunctionType : public Expression<_ResultType> {
+  public:
+    bool                                                   dot_already_written;
+    typedef _ResultType                                    ResultType;
     typedef typename AutoDiffTrait<_ResultType>::DerivType DerivType;
 
-    FunctionType():dot_already_written(false) {}
-    FunctionType(const std::string& name):
-        Expression<_ResultType>(name) {}
+    FunctionType() : dot_already_written(false) {
+    }
+    FunctionType(const std::string& name) : Expression<_ResultType>(name) {
+    }
 
     virtual typename Expression<Frame>::Ptr subExpression_Frame(const std::string& name) {
         return typename Expression<Frame>::Ptr();
@@ -892,70 +880,66 @@ public:
         dot_already_written = false;
     }
 
-
-
     void write_dotfile_update(std::ostream& of, pnumber& thisnode) {
         if (!dot_already_written) {
             dot_already_written = true;
-            thisnode=(size_t)this;
-            of << "S"<<thisnode<<"[label=\"" << Expression<ResultType>::name << "\",shape=box,style=filled,fillcolor="
-               << COLOR_LEAF << ",color=black]\n";
+            thisnode = (size_t)this;
+            of << "S" << thisnode << "[label=\"" << Expression<ResultType>::name
+               << "\",shape=box,style=filled,fillcolor=" << COLOR_LEAF << ",color=black]\n";
         } else {
-            thisnode=(size_t)this;
+            thisnode = (size_t)this;
         }
     }
 };
 
 namespace detail {
 inline void print(std::ostream& os, double val) {
-    os << "constant(" << val << ")"; 
+    os << "constant(" << val << ")";
 }
 
 inline void print(std::ostream& os, const KDL::Vector& v) {
-    os << "constant(Vector(" << v.x() << "," << v.y() << "," << v.z()  << "))"; 
+    os << "constant(Vector(" << v.x() << "," << v.y() << "," << v.z() << "))";
 }
 
 inline void print(std::ostream& os, const KDL::Rotation& R) {
-    os << "constant(Rotation(" << R(0,0) << "," << R(0,1) << "," << R(0,2)  << "," 
-                                                 << R(1,0) << "," << R(1,1) << "," << R(1,2)  << "," 
-                                                 << R(2,0) << "," << R(2,1) << "," << R(2,2)  << "))" ;
+    os << "constant(Rotation(" << R(0, 0) << "," << R(0, 1) << "," << R(0, 2) << "," << R(1, 0) << "," << R(1, 1) << ","
+       << R(1, 2) << "," << R(2, 0) << "," << R(2, 1) << "," << R(2, 2) << "))";
 }
 
 inline void print(std::ostream& os, const KDL::Frame& F) {
-    os <<  "constant(Frame(Rotation(" << F.M(0,0) << "," << F.M(0,1) << "," << F.M(0,2)  << "," 
-                                        << F.M(1,0) << "," << F.M(1,1) << "," << F.M(1,2)  << "," 
-                                        << F.M(2,0) << "," << F.M(2,1) << "," << F.M(2,2)  << "),";
-    os << "Vector("<<F.p(0) << "," << F.p(1) << "," << F.p(2) << ")))";
+    os << "constant(Frame(Rotation(" << F.M(0, 0) << "," << F.M(0, 1) << "," << F.M(0, 2) << "," << F.M(1, 0) << ","
+       << F.M(1, 1) << "," << F.M(1, 2) << "," << F.M(2, 0) << "," << F.M(2, 1) << "," << F.M(2, 2) << "),";
+    os << "Vector(" << F.p(0) << "," << F.p(1) << "," << F.p(2) << ")))";
 }
 
 inline void print(std::ostream& os, const KDL::Twist& t) {
-    os <<  "constant(Twist(Vector(" << t.vel(0) << "," << t.vel(1) << "," << t.vel(2)  << ")," 
-                               << "Vector(" << t.rot(0) << "," << t.rot(1) << "," << t.rot(2)  << ")))";
+    os << "constant(Twist(Vector(" << t.vel(0) << "," << t.vel(1) << "," << t.vel(2) << "),"
+       << "Vector(" << t.rot(0) << "," << t.rot(1) << "," << t.rot(2) << ")))";
 }
 
 inline void print(std::ostream& os, const KDL::Wrench& t) {
-    os <<  "constant(Wrench(Vector(" << t.force(0) << "," << t.force(1) << "," << t.force(2)  << ")," 
-                               << "Vector(" << t.torque(0) << "," << t.torque(1) << "," << t.torque(2)  << ")))";
+    os << "constant(Wrench(Vector(" << t.force(0) << "," << t.force(1) << "," << t.force(2) << "),"
+       << "Vector(" << t.torque(0) << "," << t.torque(1) << "," << t.torque(2) << ")))";
 }
 
 template <int n, int m>
-inline void print(std::ostream& os, const Eigen::Matrix<double,n,m>&  t) {
-    os <<  "constant(Matrix["<<n<<","<<m<<"](" << t << "))";
+inline void print(std::ostream& os, const Eigen::Matrix<double, n, m>& t) {
+    os << "constant(Matrix[" << n << "," << m << "](" << t << "))";
 }
 
-}// namespace detail
+}  // namespace detail
 
-template<typename ResultType>
-inline typename Expression<ResultType>::Ptr Constant( const ResultType& _val );
- 
 template <typename ResultType>
-class ConstantType: public FunctionType<ResultType> {
-public:
-    ResultType val;
+inline typename Expression<ResultType>::Ptr Constant(const ResultType& _val);
+
+template <typename ResultType>
+class ConstantType : public FunctionType<ResultType> {
+  public:
+    ResultType                                            val;
     typedef typename AutoDiffTrait<ResultType>::DerivType DerivType;
-    ConstantType() {}
-    ConstantType(const ResultType& _val):
-        FunctionType<ResultType>("constant"),val(_val) {
+    ConstantType() {
+    }
+    ConstantType(const ResultType& _val) : FunctionType<ResultType>("constant"), val(_val) {
     }
 
     virtual void setInputValues(const std::vector<double>& values) {
@@ -979,52 +963,45 @@ public:
         return 0;
     }
     virtual void print(std::ostream& os) const {
-        detail::print(os,val);
+        detail::print(os, val);
     }
-    virtual void update_variabletype_from_original() {}
+    virtual void update_variabletype_from_original() {
+    }
 
     virtual typename Expression<ResultType>::Ptr clone() {
-        typename Expression<ResultType>::Ptr expr(
-            new ConstantType( val )
-        );
+        typename Expression<ResultType>::Ptr expr(new ConstantType(val));
         return expr;
     }
     virtual typename Expression<DerivType>::Ptr derivativeExpression(int i) {
-        return Constant( AutoDiffTrait<DerivType>::zeroDerivative() );
+        return Constant(AutoDiffTrait<DerivType>::zeroDerivative());
     }
-
 };
 
 /** utility function to create ConstantType */
-template<typename ResultType>
-inline typename Expression<ResultType>::Ptr Constant( const ResultType& _val ) {
-   typename Expression<ResultType>::Ptr cnst(
-        new ConstantType<ResultType>( _val )
-   );
-   return cnst;
+template <typename ResultType>
+inline typename Expression<ResultType>::Ptr Constant(const ResultType& _val) {
+    typename Expression<ResultType>::Ptr cnst(new ConstantType<ResultType>(_val));
+    return cnst;
 }
 
-
-
 class InputType : public FunctionType<double> {
-public:
-    char name_buffer[32];
+  public:
+    char   name_buffer[32];
     int    variable_number;
     double val;
-    InputType() {}
+    InputType() {
+    }
     /**
      * defaultvalue specifies the initial value of the variable "value".  The value
      * when it is not filled in using setInputValues() method ( because it is not called, or
      * because variable_number does not fall in the range of values specified by setInputValues()
      *
      */
-    InputType(int _variable_number, double _defaultvalue):
-        FunctionType<double>("input"),
-        variable_number(_variable_number),
-        val(_defaultvalue) {
-            assert( variable_number >= 0);
-            sprintf(name_buffer,"input(%d)",variable_number);
-            name = name_buffer;
+    InputType(int _variable_number, double _defaultvalue)
+      : FunctionType<double>("input"), variable_number(_variable_number), val(_defaultvalue) {
+        assert(variable_number >= 0);
+        sprintf(name_buffer, "input(%d)", variable_number);
+        name = name_buffer;
     }
 
     virtual void setInputValues(const std::vector<double>& values) {
@@ -1038,21 +1015,21 @@ public:
             val = _val;
         }
     }
- 
+
     virtual void setInputValue(int variable_number, const Rotation& val) {
     }
 
     virtual double value() {
         return val;
-    } 
+    }
 
     virtual void addToOptimizer(ExpressionOptimizer& opt);
 
     virtual void getDependencies(std::set<int>& varset) {
-        varset.insert( variable_number);
+        varset.insert(variable_number);
     }
     virtual void getScalarDependencies(std::set<int>& varset) {
-        varset.insert( variable_number);
+        varset.insert(variable_number);
     }
     virtual void getRotDependencies(std::set<int>& varset) {
     }
@@ -1066,10 +1043,10 @@ public:
         } else {
             return 0.0;
         }
-    } 
- 
+    }
+
     virtual Expression<DerivType>::Ptr derivativeExpression(int i) {
-        if (variable_number== i) {
+        if (variable_number == i) {
             return Constant(1.0);
         } else {
             return Constant(0.0);
@@ -1077,7 +1054,7 @@ public:
     }
 
     virtual int number_of_derivatives() {
-        return variable_number+1;
+        return variable_number + 1;
     };
 
     virtual int isScalarVariable() {
@@ -1087,52 +1064,43 @@ public:
      * \warn  Default value for the cloned object will be the value of the original InputType object.
      */
     virtual Expression<ResultType>::Ptr clone() {
-        Expression<ResultType>::Ptr expr(
-            new InputType( variable_number, val)
-        );
+        Expression<ResultType>::Ptr expr(new InputType(variable_number, val));
         return expr;
     }
+};
 
-}; 
-
-/** utility functions to create InputType 
+/** utility functions to create InputType
  * creates a variable for which the value returns inputvariable with variablenumber
  * and whose derivative with number derivative_number is equal to 1.
  */
-inline Expression<double>::Ptr input(int variable_number, double default_value  ) {
-   Expression<double>::Ptr var(
-        new InputType( variable_number,default_value )
-   );
-   return var;
+inline Expression<double>::Ptr input(int variable_number, double default_value) {
+    Expression<double>::Ptr var(new InputType(variable_number, default_value));
+    return var;
 }
 
-inline Expression<double>::Ptr input(int variable_number ) {
-   Expression<double>::Ptr var(
-        new InputType( variable_number, 0.0 )
-   );
-   return var;
+inline Expression<double>::Ptr input(int variable_number) {
+    Expression<double>::Ptr var(new InputType(variable_number, 0.0));
+    return var;
 }
-
 
 class InputRotationType : public FunctionType<Rotation> {
-public:
-    char name_buffer[32];
-    int    variable_number;
-    Rotation  val;
-    InputRotationType() {}
+  public:
+    char     name_buffer[32];
+    int      variable_number;
+    Rotation val;
+    InputRotationType() {
+    }
     /**
      * defaultvalue specifies the initial value of the variable "value".  The value
      * when it is not filled in using setInputValues() method ( because it is not called, or
      * because variable_number does not fall in the range of values specified by setInputValues()
      *
      */
-    InputRotationType(int _variable_number, const Rotation& _defaultvalue):
-        FunctionType<Rotation>("input"),
-        variable_number(_variable_number),
-        val(_defaultvalue) {
-            assert( variable_number >= 0);
-            sprintf(name_buffer,"input(%d)",variable_number);
-            name = name_buffer;
+    InputRotationType(int _variable_number, const Rotation& _defaultvalue)
+      : FunctionType<Rotation>("input"), variable_number(_variable_number), val(_defaultvalue) {
+        assert(variable_number >= 0);
+        sprintf(name_buffer, "input(%d)", variable_number);
+        name = name_buffer;
     }
 
     virtual void setInputValues(const std::vector<double>& values) {
@@ -1140,7 +1108,7 @@ public:
 
     virtual void setInputValue(int _variable_number, double _val) {
     }
- 
+
     virtual void setInputValue(int _variable_number, const Rotation& _val) {
         if (variable_number == _variable_number) {
             val = _val;
@@ -1149,112 +1117,103 @@ public:
 
     virtual Rotation value() {
         return val;
-    } 
+    }
 
     virtual void addToOptimizer(ExpressionOptimizer& opt);
 
     virtual void getDependencies(std::set<int>& varset) {
-        varset.insert( variable_number);
-        varset.insert( variable_number+1);
-        varset.insert( variable_number+2);
+        varset.insert(variable_number);
+        varset.insert(variable_number + 1);
+        varset.insert(variable_number + 2);
     }
     virtual void getScalarDependencies(std::set<int>& varset) {
     }
     virtual void getRotDependencies(std::set<int>& varset) {
-        varset.insert( variable_number);
+        varset.insert(variable_number);
     }
 
     virtual void update_variabletype_from_original() {
     }
 
-
-
     virtual Vector derivative(int i) {
         if (variable_number == i) {
-            return Vector(1,0,0);
-        } if (variable_number+1 == i) {
-            return Vector(0,1,0);
-        } if (variable_number+2 == i) {
-            return Vector(0,0,1);
-        } else {
-            return Vector(0,0,0);
+            return Vector(1, 0, 0);
         }
-    } 
- 
+        if (variable_number + 1 == i) {
+            return Vector(0, 1, 0);
+        }
+        if (variable_number + 2 == i) {
+            return Vector(0, 0, 1);
+        } else {
+            return Vector(0, 0, 0);
+        }
+    }
+
     virtual Expression<DerivType>::Ptr derivativeExpression(int i) {
         if (variable_number == i) {
-            return Constant(Vector(1,0,0));
-        } if (variable_number+1 == i) {
-            return Constant(Vector(0,1,0));
-        } if (variable_number+2 == i) {
-            return Constant(Vector(0,0,1));
-        } else {
-            return Constant(Vector(0,0,0));
+            return Constant(Vector(1, 0, 0));
         }
-
+        if (variable_number + 1 == i) {
+            return Constant(Vector(0, 1, 0));
+        }
+        if (variable_number + 2 == i) {
+            return Constant(Vector(0, 0, 1));
+        } else {
+            return Constant(Vector(0, 0, 0));
+        }
     }
 
     virtual int number_of_derivatives() {
-        return variable_number+3;
+        return variable_number + 3;
     };
 
     /**
      * \warn  Default value for the cloned object will be the value of the original InputType object.
      */
     virtual Expression<ResultType>::Ptr clone() {
-        Expression<ResultType>::Ptr expr(
-            new InputRotationType( variable_number, val)
-        );
+        Expression<ResultType>::Ptr expr(new InputRotationType(variable_number, val));
         return expr;
     }
-
-}; 
+};
 
 /**
  * creates a variable for which the value returns a Rotation, with the given variable number
  * ( and variable number + 1 and variable number + 2).  The derivative is a rotational velocity (type Vector).
- * The derivative towards variable number corresponds to Vector(1,0,0) 
- * The derivative towards variable number+1 corresponds to Vector(0,1,0) 
- * The derivative towards variable number+2 corresponds to Vector(0,0,1) 
+ * The derivative towards variable number corresponds to Vector(1,0,0)
+ * The derivative towards variable number+1 corresponds to Vector(0,1,0)
+ * The derivative towards variable number+2 corresponds to Vector(0,0,1)
  * \param [in] variable_number the variable number to start with
  * \param [in] default_value   a default value for the position value (i.e. a Rotation Matrix).
- * \return an expression graph of type rotation. 
+ * \return an expression graph of type rotation.
  */
 
-inline Expression<Rotation>::Ptr inputRot(int variable_number, const Rotation& default_value  ) {
-   Expression<Rotation>::Ptr var(
-        new InputRotationType( variable_number,default_value )
-   );
-   return var;
+inline Expression<Rotation>::Ptr inputRot(int variable_number, const Rotation& default_value) {
+    Expression<Rotation>::Ptr var(new InputRotationType(variable_number, default_value));
+    return var;
 }
 /**
  * creates a variable for which the value returns a Rotation, with the given variable number
  * ( and variable number + 1 and variable number + 2).  The derivative is a rotational velocity (type Vector).
- * The derivative towards variable number corresponds to Vector(1,0,0) 
- * The derivative towards variable number+1 corresponds to Vector(0,1,0) 
- * The derivative towards variable number+2 corresponds to Vector(0,0,1) 
+ * The derivative towards variable number corresponds to Vector(1,0,0)
+ * The derivative towards variable number+1 corresponds to Vector(0,1,0)
+ * The derivative towards variable number+2 corresponds to Vector(0,0,1)
  * \param [in] variable_number the variable number to start with
  * \param [in] default_value   a default value for the position value (i.e. a Rotation Matrix).
- * \return an expression graph of type rotation. 
+ * \return an expression graph of type rotation.
  */
-inline Expression<Rotation>::Ptr inputRot(int variable_number ) {
-   Expression<Rotation>::Ptr var(
-        new InputRotationType( variable_number, Rotation::Identity() )
-   );
-   return var;
+inline Expression<Rotation>::Ptr inputRot(int variable_number) {
+    Expression<Rotation>::Ptr var(new InputRotationType(variable_number, Rotation::Identity()));
+    return var;
 }
-
 
 //#define CHECK_CACHE
 
-
 class CachedExpression {
-    public:
-        virtual void getDependencies(std::set<int>& varset)=0;
-        virtual void invalidate_cache() = 0;
-        virtual void addToOptimizer(ExpressionOptimizer& opt);
+  public:
+    virtual void getDependencies(std::set<int>& varset) = 0;
+    virtual void invalidate_cache() = 0;
+    virtual void addToOptimizer(ExpressionOptimizer& opt);
 };
-
 
 /**
  * caches the first max_number_of_var results for derivative(i) and value()
@@ -1262,46 +1221,47 @@ class CachedExpression {
  * derivatives of variables with variable number > max_number_of_var are not cached.
  */
 template <typename ResultType>
-class CachedType: public Expression<ResultType>, public CachedExpression {
-public:
+class CachedType : public Expression<ResultType>, public CachedExpression {
+  public:
     typedef typename AutoDiffTrait<ResultType>::DerivType DerivType;
-    typename Expression<ResultType>::Ptr argument;
-    ResultType val;
-    std::vector<DerivType> deriv;
-    bool dot_already_written;
-    std::vector<bool> cached_deriv;
-    bool cached_value;
-    std::string cached_name;
+    typename Expression<ResultType>::Ptr                  argument;
+    ResultType                                            val;
+    std::vector<DerivType>                                deriv;
+    bool                                                  dot_already_written;
+    std::vector<bool>                                     cached_deriv;
+    bool                                                  cached_value;
+    std::string                                           cached_name;
 
-    CachedType() {}
+    CachedType() {
+    }
     /**
      * caches the first the results for derivative(i) and value()
      * (to avoid unnecessary computations)
      */
-    CachedType(typename Expression<ResultType>::Ptr _argument, const std::string& _name):
-        Expression<ResultType>("cached"),
-        argument(checkConstant<ResultType>(_argument)),
-        deriv(_argument->number_of_derivatives()), 
-        cached_deriv(_argument->number_of_derivatives()),
-        cached_value(false),
-        cached_name(_name) {
+    CachedType(typename Expression<ResultType>::Ptr _argument, const std::string& _name)
+      : Expression<ResultType>("cached")
+      , argument(checkConstant<ResultType>(_argument))
+      , deriv(_argument->number_of_derivatives())
+      , cached_deriv(_argument->number_of_derivatives())
+      , cached_value(false)
+      , cached_name(_name) {
     }
 
     virtual ResultType value() {
         if (cached_value) {
-            #ifdef CHECK_CACHE
-            assert( val == argument->value() );
-            #endif
+#ifdef CHECK_CACHE
+            assert(val == argument->value());
+#endif
             return val;
         } else {
-            val          = argument->value();
+            val = argument->value();
             cached_value = true;
             return val;
         }
     }
 
     virtual void invalidate_cache() {
-        //std::cout << "invalidate cache of " << cached_name << std::endl;
+        // std::cout << "invalidate cache of " << cached_name << std::endl;
         cached_value = false;
         fill_n(cached_deriv.begin(), deriv.size(), false);
     }
@@ -1326,39 +1286,40 @@ public:
         argument->update_variabletype_from_original();
     }
 
-
     virtual DerivType derivative(int i) {
-        assert(i>=0);
-        if (i < (int)deriv.size() ) {
+        assert(i >= 0);
+        if (i < (int)deriv.size()) {
             if (cached_deriv[i]) {
-                #ifdef CHECK_CACHE
-                assert( deriv[i] == argument->derivative(i) );
-                #endif
+#ifdef CHECK_CACHE
+                assert(deriv[i] == argument->derivative(i));
+#endif
                 return deriv[i];
             } else {
                 deriv[i] = argument->derivative(i);
-                cached_deriv[i] = true; 
+                cached_deriv[i] = true;
                 return deriv[i];
             }
         } else {
-            //return argument->derivative(i);
-            //typename AutoDiffTrait<ResultType>::DerivType a = argument->derivative(i);
-            //typename AutoDiffTrait<ResultType>::DerivType b = AutoDiffTrait<ResultType>::zeroDerivative();
-            //assert( a==b );
-            #ifdef CHECK_CACHE
-            assert( AutoDiffTrait<ResultType>::zeroDerivative() == argument->derivative(i) );
-            #endif
+// return argument->derivative(i);
+// typename AutoDiffTrait<ResultType>::DerivType a = argument->derivative(i);
+// typename AutoDiffTrait<ResultType>::DerivType b = AutoDiffTrait<ResultType>::zeroDerivative();
+// assert( a==b );
+#ifdef CHECK_CACHE
+            assert(AutoDiffTrait<ResultType>::zeroDerivative() == argument->derivative(i));
+#endif
             return AutoDiffTrait<ResultType>::zeroDerivative();
         }
     }
 
     virtual typename Expression<DerivType>::Ptr derivativeExpression(int i) {
         // or should it be cached(...)
-        if (this->name.size()==0) {
-            typename Expression<DerivType>::Ptr retval( new CachedType<DerivType>(argument->derivativeExpression(i),""));
+        if (this->name.size() == 0) {
+            typename Expression<DerivType>::Ptr retval(
+                new CachedType<DerivType>(argument->derivativeExpression(i), ""));
             return retval;
         } else {
-            typename Expression<DerivType>::Ptr retval( new CachedType<DerivType>(argument->derivativeExpression(i),std::string(this->name)+"(deriv)" ));
+            typename Expression<DerivType>::Ptr retval(
+                new CachedType<DerivType>(argument->derivativeExpression(i), std::string(this->name) + "(deriv)"));
             return retval;
         }
     }
@@ -1368,90 +1329,89 @@ public:
     }
 
     virtual typename Expression<Frame>::Ptr subExpression_Frame(const std::string& name) {
-        if (cached_name == name) { 
-            //std::cout << "matched"<< std::endl;
-            return type_comparison<typename Expression<ResultType>::Ptr, typename Expression<Frame>::Ptr >::return_if_equal(argument);
+        if (cached_name == name) {
+            // std::cout << "matched"<< std::endl;
+            return type_comparison<typename Expression<ResultType>::Ptr,
+                                   typename Expression<Frame>::Ptr>::return_if_equal(argument);
         } else {
             return argument->subExpression_Frame(name);
         }
     }
 
     virtual typename Expression<Rotation>::Ptr subExpression_Rotation(const std::string& name) {
-        if (cached_name == name) { 
-            //std::cout << "matched"<< std::endl;
-            return type_comparison<typename Expression<ResultType>::Ptr, typename Expression<Rotation>::Ptr >::return_if_equal(argument);
+        if (cached_name == name) {
+            // std::cout << "matched"<< std::endl;
+            return type_comparison<typename Expression<ResultType>::Ptr,
+                                   typename Expression<Rotation>::Ptr>::return_if_equal(argument);
         } else {
             return argument->subExpression_Rotation(name);
         }
- 
     }
 
     virtual typename Expression<Vector>::Ptr subExpression_Vector(const std::string& name) {
-        if (cached_name == name) { 
-            //std::cout << "matched"<< std::endl;
-            return type_comparison<typename Expression<ResultType>::Ptr, typename Expression<Vector>::Ptr >::return_if_equal(argument);
+        if (cached_name == name) {
+            // std::cout << "matched"<< std::endl;
+            return type_comparison<typename Expression<ResultType>::Ptr,
+                                   typename Expression<Vector>::Ptr>::return_if_equal(argument);
         } else {
             return argument->subExpression_Vector(name);
         }
- 
     }
 
     virtual typename Expression<Twist>::Ptr subExpression_Twist(const std::string& name) {
-        if (cached_name == name) { 
-            //std::cout << "matched"<< std::endl;
-            return type_comparison<typename Expression<ResultType>::Ptr, typename Expression<Twist>::Ptr >::return_if_equal(argument);
+        if (cached_name == name) {
+            // std::cout << "matched"<< std::endl;
+            return type_comparison<typename Expression<ResultType>::Ptr,
+                                   typename Expression<Twist>::Ptr>::return_if_equal(argument);
         } else {
             return argument->subExpression_Twist(name);
         }
- 
     }
-    
+
     virtual typename Expression<Wrench>::Ptr subExpression_Wrench(const std::string& name) {
-        if (cached_name == name) { 
-            //std::cout << "matched"<< std::endl;
-            return type_comparison<typename Expression<ResultType>::Ptr, typename Expression<Wrench>::Ptr >::return_if_equal(argument);
+        if (cached_name == name) {
+            // std::cout << "matched"<< std::endl;
+            return type_comparison<typename Expression<ResultType>::Ptr,
+                                   typename Expression<Wrench>::Ptr>::return_if_equal(argument);
         } else {
             return argument->subExpression_Wrench(name);
         }
- 
     }
 
     virtual typename Expression<double>::Ptr subExpression_Double(const std::string& name) {
-        if (cached_name == name) { 
-            //std::cout << "matched"<< std::endl;
-            return type_comparison<typename Expression<ResultType>::Ptr, typename Expression<double>::Ptr >::return_if_equal(argument);
+        if (cached_name == name) {
+            // std::cout << "matched"<< std::endl;
+            return type_comparison<typename Expression<ResultType>::Ptr,
+                                   typename Expression<double>::Ptr>::return_if_equal(argument);
         } else {
             return argument->subExpression_Double(name);
         }
     }
 
-
     virtual typename Expression<ResultType>::Ptr clone() {
-        typename Expression<ResultType>::Ptr expr(
-            new CachedType<ResultType>( argument->clone(),this->cached_name)
-        );
+        typename Expression<ResultType>::Ptr expr(new CachedType<ResultType>(argument->clone(), this->cached_name));
         return expr;
     }
 
     virtual void setInputValues(const std::vector<double>& values) {
-        cached_value=false;
+        cached_value = false;
         fill_n(cached_deriv.begin(), deriv.size(), false);
         argument->setInputValues(values);
-    } 
+    }
 
     virtual void setInputValue(int variable_number, double val) {
-        cached_value=false;
+        cached_value = false;
         if (variable_number < (int)deriv.size()) {
             fill_n(cached_deriv.begin(), deriv.size(), false);
         }
-        argument->setInputValue(variable_number,val);
-    } 
+        argument->setInputValue(variable_number, val);
+    }
     virtual void setInputValue(int variable_number, const Rotation& val) {
-        cached_value=false;
+        cached_value = false;
         if (variable_number < (int)deriv.size()) {
             fill_n(cached_deriv.begin(), deriv.size(), false);
         }
-        argument->setInputValue(variable_number,val);
+        argument->setInputValue(variable_number, val);
     }
 
     virtual void debug_printtree() {
@@ -1472,17 +1432,16 @@ public:
 
     virtual void write_dotfile_update(std::ostream& of, pnumber& thisnode) {
         if (!dot_already_written) {
-            dot_already_written=true;
-            thisnode=(size_t)this;
-            of << "S"<<thisnode<<"[label=\"cached("
-               << cached_name
-               << ")\",shape=box,style=filled,fillcolor="
-               << COLOR_CACHED << ",color=black]\n";
+            dot_already_written = true;
+            thisnode = (size_t)this;
+            of << "S" << thisnode << "[label=\"cached(" << cached_name
+               << ")\",shape=box,style=filled,fillcolor=" << COLOR_CACHED << ",color=black]\n";
             pnumber argnode;
-            argument->write_dotfile_update(of,argnode);
-            of << "S"<<thisnode<<" -> " << "S"<<argnode<< "\n"; //rev
+            argument->write_dotfile_update(of, argnode);
+            of << "S" << thisnode << " -> "
+               << "S" << argnode << "\n";  // rev
         } else {
-            thisnode=(size_t)this;
+            thisnode = (size_t)this;
         }
     }
 };
@@ -1499,23 +1458,19 @@ inline typename Expression<Frame>::Ptr CachedType<Frame>::subExpression_Frame(co
 }
 */
 
-
 /** utility function to create VariableType */
-template<typename ResultType>
-inline typename Expression<ResultType>::Ptr cached( typename Expression<ResultType>::Ptr argument ) {
-   typename Expression<ResultType>::Ptr cach(
-        new CachedType<ResultType>( argument,"" )
-   );
-   return cach;
+template <typename ResultType>
+inline typename Expression<ResultType>::Ptr cached(typename Expression<ResultType>::Ptr argument) {
+    typename Expression<ResultType>::Ptr cach(new CachedType<ResultType>(argument, ""));
+    return cach;
 }
 
 /** utility function to create VariableType */
-template<typename ResultType>
-inline typename Expression<ResultType>::Ptr cached( const std::string& name,typename Expression<ResultType>::Ptr argument ) {
-   typename Expression<ResultType>::Ptr cach(
-        new CachedType<ResultType>( argument,name )
-   );
-   return cach;
+template <typename ResultType>
+inline typename Expression<ResultType>::Ptr cached(const std::string&                   name,
+                                                   typename Expression<ResultType>::Ptr argument) {
+    typename Expression<ResultType>::Ptr cach(new CachedType<ResultType>(argument, name));
+    return cach;
 }
 
 /**
@@ -1523,51 +1478,52 @@ inline typename Expression<ResultType>::Ptr cached( const std::string& name,type
  * ( not using the derivative() function )
  * \param expr [in] expression to compute the numerical derivative.
  * \param towards_var [in]  variable number of the variable towards the derivative will be taken.
- * \param value [in]  value for the towards_var-th variable. 
- * \param h [in] interval over which to take the numerical derivative. 
+ * \param value [in]  value for the towards_var-th variable.
+ * \param h [in] interval over which to take the numerical derivative.
  */
-template<typename ResultType>
-typename AutoDiffTrait<ResultType>::DerivType
-inline numerical_derivative( typename Expression<ResultType>::Ptr expr, int towards_var, double value, double h=1E-7) {
-    ResultType a,b;
-    double val;
+template <typename ResultType>
+typename AutoDiffTrait<ResultType>::DerivType inline numerical_derivative(typename Expression<ResultType>::Ptr expr,
+                                                                          int    towards_var,
+                                                                          double value,
+                                                                          double h = 1E-7) {
+    ResultType a, b;
+    double     val;
     val = value - h;
-    expr->setInputValue(towards_var,val);
+    expr->setInputValue(towards_var, val);
     a = expr->value();
 
-
     val = value + h;
-    expr->setInputValue(towards_var,val);
+    expr->setInputValue(towards_var, val);
     b = expr->value();
 
-    return KDL::diff(a,b,1.0)/(2.0*h);
+    return KDL::diff(a, b, 1.0) / (2.0 * h);
 }
-
 
 /**
  * output to an ostream:
  */
-template<typename ResultType>
-inline std::ostream& display( std::ostream& os, typename Expression<ResultType>::Ptr expr ) {
-   os << "Value : ";
-   os << expr->value() << "\n";
-   for (int i=0;i<expr->number_of_derivatives();++i) {
-       os << "Derivative towards var " << i << " : : " << expr->derivative(i) << "\n";
-   }
-   os << "\n";
-   return os;
+template <typename ResultType>
+inline std::ostream& display(std::ostream& os, typename Expression<ResultType>::Ptr expr) {
+    os << "Value : ";
+    os << expr->value() << "\n";
+    for (int i = 0; i < expr->number_of_derivatives(); ++i) {
+        os << "Derivative towards var " << i << " : : " << expr->derivative(i) << "\n";
+    }
+    os << "\n";
+    return os;
 }
 
 template <typename R>
-class MakeConstantType: public UnaryExpression<R,R> {
-public:
-    typedef UnaryExpression<R,R> UnExpr;
+class MakeConstantType : public UnaryExpression<R, R> {
+  public:
+    typedef UnaryExpression<R, R>                UnExpr;
     typedef typename AutoDiffTrait<R>::DerivType DerivType;
 
-    MakeConstantType() {}
+    MakeConstantType() {
+    }
 
-    MakeConstantType(typename UnExpr::ArgumentExpr::Ptr arg ):
-        UnaryExpression<R,R>("make_constant",arg) {}
+    MakeConstantType(typename UnExpr::ArgumentExpr::Ptr arg) : UnaryExpression<R, R>("make_constant", arg) {
+    }
 
     virtual R value() {
         return this->argument->value();
@@ -1576,83 +1532,81 @@ public:
         return AutoDiffTrait<R>::zeroDerivative();
     }
     virtual typename Expression<DerivType>::Ptr derivativeExpression(int i) {
-        return Constant(  AutoDiffTrait<R>::zeroDerivative());
+        return Constant(AutoDiffTrait<R>::zeroDerivative());
     }
     virtual typename Expression<R>::Ptr clone() {
-        typename Expression<R>::Ptr expr(
-            new MakeConstantType( this->argument->clone() )
-        );
+        typename Expression<R>::Ptr expr(new MakeConstantType(this->argument->clone()));
         return expr;
     }
 };
 
-template<typename R>
-inline typename Expression<R>::Ptr make_constant( const typename Expression<R>::Ptr& arg ) {
-   typename Expression<R>::Ptr cnst(
-        new MakeConstantType<R>( arg )
-   );
-   return cnst;
+template <typename R>
+inline typename Expression<R>::Ptr make_constant(const typename Expression<R>::Ptr& arg) {
+    typename Expression<R>::Ptr cnst(new MakeConstantType<R>(arg));
+    return cnst;
 }
 
 /**
- * This expressiongraph node represents a constant value corresponding to 
- * the initial value of an expression. 
+ * This expressiongraph node represents a constant value corresponding to
+ * the initial value of an expression.
  *
  * Caveat:
  *  - The initial value (time==0) should have occured before, otherwise its value is not cached.
  *    (this is satisfied when time is always increasing and starts from zero)
  *  - The resulting expression has derivatives zero, i.e. it is a constant.
  */
-template<typename T>
-class InitialValueType: public BinaryExpression<T,double,T> {
-        T initial_value;
-    public:
-        typedef BinaryExpression<T,double,T> BinExpr;
-        typedef typename AutoDiffTrait<T>::DerivType DerivType; 
+template <typename T>
+class InitialValueType : public BinaryExpression<T, double, T> {
+    T initial_value;
 
-        InitialValueType() {}
+  public:
+    typedef BinaryExpression<T, double, T>       BinExpr;
+    typedef typename AutoDiffTrait<T>::DerivType DerivType;
 
-        InitialValueType(Expression<double>::Ptr time_var, typename Expression<T>::Ptr arg):
-            BinExpr("initial_value", time_var, arg) {}
+    InitialValueType() {
+    }
 
-        InitialValueType(Expression<double>::Ptr time_var, typename Expression<T>::Ptr arg, const T& _initial_value):
-            BinExpr("initial_value", time_var, arg), initial_value(_initial_value) {}
+    InitialValueType(Expression<double>::Ptr time_var, typename Expression<T>::Ptr arg)
+      : BinExpr("initial_value", time_var, arg) {
+    }
 
-        virtual T value() {
-            double time=this->argument1->value();
-            if (time==0) {
-                initial_value = this->argument2->value();
-            }
-            return initial_value; 
-        } 
-        
-        virtual DerivType derivative(int i) {
-            return AutoDiffTrait<T>::zeroDerivative();
+    InitialValueType(Expression<double>::Ptr time_var, typename Expression<T>::Ptr arg, const T& _initial_value)
+      : BinExpr("initial_value", time_var, arg), initial_value(_initial_value) {
+    }
+
+    virtual T value() {
+        double time = this->argument1->value();
+        if (time == 0) {
+            initial_value = this->argument2->value();
         }
-        virtual typename Expression<DerivType>::Ptr derivativeExpression(int i) {
-            return Constant(  AutoDiffTrait<T>::zeroDerivative());
-        }
-        virtual typename Expression<T>::Ptr clone() {
-            typename Expression<T>::Ptr expr(
-                new InitialValueType(this->argument1->clone(), this->argument2->clone(), initial_value)
-            );
-            return expr;
-        }
+        return initial_value;
+    }
+
+    virtual DerivType derivative(int i) {
+        return AutoDiffTrait<T>::zeroDerivative();
+    }
+    virtual typename Expression<DerivType>::Ptr derivativeExpression(int i) {
+        return Constant(AutoDiffTrait<T>::zeroDerivative());
+    }
+    virtual typename Expression<T>::Ptr clone() {
+        typename Expression<T>::Ptr expr(
+            new InitialValueType(this->argument1->clone(), this->argument2->clone(), initial_value));
+        return expr;
+    }
 };
 
-template<typename R>
-inline typename Expression<R>::Ptr initial_value( const typename Expression<double>::Ptr time, const typename Expression<R>::Ptr& arg ) {
-   typename Expression<R>::Ptr e(
-        new InitialValueType<R>( time,arg )
-   );
-   return e;
+template <typename R>
+inline typename Expression<R>::Ptr initial_value(const typename Expression<double>::Ptr time,
+                                                 const typename Expression<R>::Ptr&     arg) {
+    typename Expression<R>::Ptr e(new InitialValueType<R>(time, arg));
+    return e;
 }
 
 /**
  * - This class allows to optimize setInputValue() routines and optimizes
  * the use of the cached nodes.
  * - prepare should always be called before the addInput/addCached_xxx routines.
- * - addInput/addCached_xxx should be called before setInputValues(..) 
+ * - addInput/addCached_xxx should be called before setInputValues(..)
  * - setInputValue called on this object replaces all calls to the individual
  *   expression trees.
  *
@@ -1666,9 +1620,9 @@ inline typename Expression<R>::Ptr initial_value( const typename Expression<doub
  *   e1->addToOptimizer(opt);
  *   e2->addToOptimizer(opt);
  *   ...
- *   opt.setInputValues(values);   
+ *   opt.setInputValues(values);
  * @endcode
- * 
+ *
  * the last call to opt.setInputValues(..) replaces calling e1.setInputValues(..) and e2.setInputValues(..)
  * It has the following effects:
  * - the expression tree does not need to be traversed to find input(..) nodes.
@@ -1677,9 +1631,9 @@ inline typename Expression<R>::Ptr initial_value( const typename Expression<doub
  * - cached nodes that only depend on variables not in the variable_list will not be put in dirty state.  The optimizer
  *   supposes that variables not in the variable_list are constant.
  *
- * @warning: ExpressionOptimizer supposes that the references to the expression trees remain valid as long as the expression optimizer
- *           is used.  Due to technical reasons (an object does not know its own reference count), it does not increase the reference
- *           count in the smart pointer that is normally used to handle expression trees.
+ * @warning: ExpressionOptimizer supposes that the references to the expression trees remain valid as long as the
+ * expression optimizer is used.  Due to technical reasons (an object does not know its own reference count), it does
+ * not increase the reference count in the smart pointer that is normally used to handle expression trees.
  *
  * The ExpressionOptimizer works as follows:
  *  - all Input objects that are relevant inside the expressions are registered.
@@ -1688,108 +1642,107 @@ inline typename Expression<R>::Ptr initial_value( const typename Expression<doub
  *    and all registered Cached objects are invalidated.
  */
 class ExpressionOptimizer {
-    typedef std::list<InputType*>  ListInput;
-    typedef std::vector<ListInput> Inputs;
-    typedef std::set<int>          InputSet;
+    typedef std::list<InputType*>         ListInput;
+    typedef std::vector<ListInput>        Inputs;
+    typedef std::set<int>                 InputSet;
     typedef std::list<InputRotationType*> ListRotInput;
     typedef std::vector<ListRotInput>     RotInputs;
     typedef std::set<int>                 RotInputSet;
 
+    Inputs           inputs;  ///< for each input variable number, a list of InputType objects with this variable number
+    std::vector<int> inputvarnr;  ///< input variable numbers
 
-    Inputs                                inputs;          ///< for each input variable number, a list of InputType objects with this variable number
-    std::vector<int>                      inputvarnr;      ///< input variable numbers
+    RotInputs rotinputs;  ///< for each input variable number, a list of InputRotationType objects with this variable
+                          ///< number
+    std::vector<int> rotinputvarnr;  ///< input variable numbers corresponding to Rotation variables.
 
-    RotInputs                             rotinputs;       ///< for each input variable number, a list of InputRotationType objects with this variable number
-    std::vector<int>                      rotinputvarnr;   ///< input variable numbers corresponding to Rotation variables.
+    InputSet inputset;  ///< std::set that contains all involved variable numbers (for scalar + Rotation)
 
-    InputSet                              inputset;        ///< std::set that contains all involved variable numbers (for scalar + Rotation)
+    std::set<CachedExpression*>    cached;    ///< set of cached of objects that will have to be invalidated
+    std::vector<CachedExpression*> v_cached;  ///< list of cached of objects that will have to be invalidated
 
-    std::set<CachedExpression*>             cached;        ///< set of cached of objects that will have to be invalidated
-    std::vector<CachedExpression*>          v_cached;      ///< list of cached of objects that will have to be invalidated
+  public:
+    /**
+     * configure the optimizer for input of these variable numbers.
+     * @param inputvarnr a list of (integer) variable numbers (corresponding to scalar variables)
+     */
+    void prepare(const std::vector<int>& inputvarnr);
 
-public:
-        /**
-         * configure the optimizer for input of these variable numbers.
-         * @param inputvarnr a list of (integer) variable numbers (corresponding to scalar variables)
-         */
-        void prepare(const std::vector<int>& inputvarnr);
+    /**
+     * configure the optimizer for input of these variable numbers.
+     * @param inputvarnr a list of (integer) variable numbers (corresponding to scalar variables)
+     * @param rotinputvarnr a list of (integer) variable numbers (corresponding to Rotation variables)
+     * \warning each Rotation variable takes 3 variable numbers.
+     */
+    void prepare(const std::vector<int>& inputvarnr, const std::vector<int>& rotinputvarnr);
 
-        /**
-         * configure the optimizer for input of these variable numbers.
-         * @param inputvarnr a list of (integer) variable numbers (corresponding to scalar variables)
-         * @param rotinputvarnr a list of (integer) variable numbers (corresponding to Rotation variables)
-         * \warning each Rotation variable takes 3 variable numbers.
-         */
-        void prepare(const std::vector<int>& inputvarnr, const std::vector<int>& rotinputvarnr);
+    /**
+     * registers an input object to be refreshed.
+     */
+    void addInput(InputType* obj);
 
+    /**
+     * registers an input object to be refreshed.
+     */
+    void addInput(InputRotationType* obj);
 
-        /**
-         * registers an input object to be refreshed.
-         */
-        void addInput(InputType* obj);
+    /// registers a Cached object
+    void addCached(CachedExpression* obj);
 
-        /**
-         * registers an input object to be refreshed.
-         */
-        void addInput(InputRotationType* obj);
+    /**
+     * set the input values for all of the involved expressions, the values given correspond to the
+     * inputvarnr given with the prepare method.
+     */
+    void setInputValues(const std::vector<double>& values);
+    /**
+     * set the input values for all of the involved expressions (both scalar and Rotation), the values given correspond
+     * to the inputvarnr and rotinputvarnr given with the prepare method.
+     */
+    void setInputValues(const std::vector<double>& values, const std::vector<Rotation>& rotvalues);
 
-        /// registers a Cached object
-        void addCached( CachedExpression* obj); 
+    /**
+     * set the input values for all of the involved expressions, the values given correspond to the
+     * inputvarnr given with the prepare method.
+     */
+    void setInputValues(const Eigen::VectorXd& values);
 
-        /**
-         * set the input values for all of the involved expressions, the values given correspond to the
-         * inputvarnr given with the prepare method.
-         */
-        void setInputValues(const std::vector<double>& values);
-        /**
-         * set the input values for all of the involved expressions (both scalar and Rotation), the values given correspond to the
-         * inputvarnr and rotinputvarnr given with the prepare method.
-         */
-        void setInputValues(const std::vector<double>& values, const std::vector<Rotation>& rotvalues);
-
-        /**
-         * set the input values for all of the involved expressions, the values given correspond to the
-         * inputvarnr given with the prepare method.
-         */
-        void setInputValues(const Eigen::VectorXd& values);
-        
-        /**
-         * set the input values for all of the involved expressions (both scalar and Rotation), the values given correspond to the
-         * inputvarnr and rotinputvarnr given with the prepare method.
-         */
-        void setInputValues(const Eigen::VectorXd& values, const std::vector<Rotation>& rotvalues);
+    /**
+     * set the input values for all of the involved expressions (both scalar and Rotation), the values given correspond
+     * to the inputvarnr and rotinputvarnr given with the prepare method.
+     */
+    void setInputValues(const Eigen::VectorXd& values, const std::vector<Rotation>& rotvalues);
 };
 
 inline void InputType::addToOptimizer(ExpressionOptimizer& opt) {
-        //std::cout << "calling addinput " << std::endl;
-        opt.addInput(this);
+    // std::cout << "calling addinput " << std::endl;
+    opt.addInput(this);
 }
 
 inline void InputRotationType::addToOptimizer(ExpressionOptimizer& opt) {
-        //std::cout << "calling addinput " << std::endl;
-        opt.addInput(this);
+    // std::cout << "calling addinput " << std::endl;
+    opt.addInput(this);
 }
 
 inline void CachedExpression::addToOptimizer(ExpressionOptimizer& opt) {
     opt.addCached(this);
 }
 
-template<typename T>
-inline typename Expression<T>::Ptr checkConstant( typename Expression<T>::Ptr a ) {
-        if (!a) {
-            throw std::out_of_range("checkConstant: null pointer is given as an argument");
-        }
-        std::set<int> vset;
-        a->getDependencies(vset);
-        if (vset.empty()) {
-            return Constant( a->value() );
-        } else {
-            return a;
-        }
+template <typename T>
+inline typename Expression<T>::Ptr checkConstant(typename Expression<T>::Ptr a) {
+    if (!a) {
+        throw std::out_of_range("checkConstant: null pointer is given as an argument");
+    }
+    std::set<int> vset;
+    a->getDependencies(vset);
+    if (vset.empty()) {
+        return Constant(a->value());
+    } else {
+        return a;
+    }
 }
 
-template<typename T>
-inline bool isConstant( typename Expression<T>::Ptr a) {
+template <typename T>
+inline bool isConstant(typename Expression<T>::Ptr a) {
     if (!a) {
         throw std::out_of_range("null pointer is given as an argument");
     }
@@ -1798,25 +1751,24 @@ inline bool isConstant( typename Expression<T>::Ptr a) {
     return vset.empty();
 }
 
-inline bool isConstantZero( Expression<double>::Ptr a) {
+inline bool isConstantZero(Expression<double>::Ptr a) {
     if (!a) {
         throw std::out_of_range("null pointer is given as an argument");
     }
     std::set<int> vset;
     a->getDependencies(vset);
-    return vset.empty() && (a->value()==0);
+    return vset.empty() && (a->value() == 0);
 }
 
-inline bool isConstantOne( Expression<double>::Ptr a) {
+inline bool isConstantOne(Expression<double>::Ptr a) {
     if (!a) {
         throw std::out_of_range("null pointer is given as an argument");
     }
     std::set<int> vset;
     a->getDependencies(vset);
     double eps = 1E-16;
-    return vset.empty() && (1-eps <= a->value()) && (a->value() <= 1+eps);
+    return vset.empty() && (1 - eps <= a->value()) && (a->value() <= 1 + eps);
 }
-
 
 /**
  * Explicite template instantiations:
@@ -1828,24 +1780,23 @@ extern template class Expression<Rotation>;
 extern template class Expression<Twist>;
 extern template class Expression<Wrench>;
 
-extern template class UnaryExpression<double,double>;
-extern template class UnaryExpression<Vector,Vector>;
-extern template class UnaryExpression<Frame,Frame>;
-extern template class UnaryExpression<Rotation,Rotation>;
-extern template class UnaryExpression<Twist,Twist>;
-extern template class UnaryExpression<Wrench,Wrench>;
+extern template class UnaryExpression<double, double>;
+extern template class UnaryExpression<Vector, Vector>;
+extern template class UnaryExpression<Frame, Frame>;
+extern template class UnaryExpression<Rotation, Rotation>;
+extern template class UnaryExpression<Twist, Twist>;
+extern template class UnaryExpression<Wrench, Wrench>;
 
-extern template class BinaryExpression<double,double,double>;
-extern template class BinaryExpression<Vector,Vector,Vector>;
-extern template class BinaryExpression<Rotation,Rotation,Rotation>;
-extern template class BinaryExpression<Frame,Frame,Frame>;
-extern template class BinaryExpression<Twist,Twist,Twist>;
-extern template class BinaryExpression<Wrench,Wrench,Wrench>;
+extern template class BinaryExpression<double, double, double>;
+extern template class BinaryExpression<Vector, Vector, Vector>;
+extern template class BinaryExpression<Rotation, Rotation, Rotation>;
+extern template class BinaryExpression<Frame, Frame, Frame>;
+extern template class BinaryExpression<Twist, Twist, Twist>;
+extern template class BinaryExpression<Wrench, Wrench, Wrench>;
 
-
-extern template class TernaryExpression<double,double,double,double>;
-extern template class TernaryExpression<Vector,double,double,double>;
-extern template class TernaryExpression<Rotation,double,double,double>;
+extern template class TernaryExpression<double, double, double, double>;
+extern template class TernaryExpression<Vector, double, double, double>;
+extern template class TernaryExpression<Rotation, double, double, double>;
 
 extern template class FunctionType<double>;
 extern template class FunctionType<Vector>;
@@ -1861,14 +1812,12 @@ extern template class ConstantType<Frame>;
 extern template class ConstantType<Twist>;
 extern template class ConstantType<Wrench>;
 
-
 extern template class CachedType<double>;
 extern template class CachedType<Vector>;
 extern template class CachedType<Rotation>;
 extern template class CachedType<Frame>;
 extern template class CachedType<Twist>;
 extern template class CachedType<Wrench>;
-
 
 /*
 extern template class MakeConstantType<double>;
@@ -1893,6 +1842,5 @@ extern template class NearZero_double<Twist>;
 extern template class NearZero_double<Wrench>;
 */
 
-
-} // end of namespace KDL
+}  // end of namespace KDL
 #endif
